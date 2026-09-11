@@ -139,6 +139,7 @@ h1 em { color: var(--cyan); font-style: normal; }
 .quintesys-work-field { display: flex; flex-direction: column; gap: 0.28rem; }
 .quintesys-work-field-label { color: #6fd8f0; font-family: 'DM Mono', monospace; font-size: 0.5rem; letter-spacing: 0.13em; }
 .quintesys-work-field-value { color: #d0e2ed; font-size: 0.74rem; line-height: 1.5; }
+.quintesys-work-field-detail { color: #7f97a8; font-size: 0.63rem; line-height: 1.45; }
 .quintesys-work-field.is-emphasis .quintesys-work-field-value { color: #8feaff; font-family: 'DM Mono', monospace; font-size: 0.84rem; font-weight: 600; letter-spacing: 0.03em; text-shadow: 0 0 16px rgba(107, 225, 255, 0.35); }
 @media (max-width: 800px) {
 	.quintesys-discipline-grid { grid-template-columns: 1fr; }

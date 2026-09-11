@@ -49,6 +49,19 @@ export const experienceStates = [
 		whatBuilt: 'Production AI system architecture covering model serving and inference (ViT / ResNet) through FastAPI and gRPC on Ray Serve, MLflow-managed artifact/version tracking, and Azure VM-based training, deployment, and debugging.',
 		technologies: ['ViT', 'ResNet', 'FastAPI', 'gRPC', 'Ray Serve', 'MLflow', 'Azure VM', 'Software Testing'],
 		impact: 'Served ViT/ResNet inference through FastAPI, gRPC, and Ray Serve, with MLflow-tracked experiments/models and Azure VM training, deployment, and debugging workflows.',
+		workItems: [
+			{
+				id: 'production-model-serving',
+				title: 'PRODUCTION MODEL SERVING',
+				subtitle: 'ViT / ResNet inference',
+				fields: [
+					{ label: 'MODEL', value: 'ViT / ResNet' },
+					{ label: 'SERVING', value: 'FastAPI · gRPC · Ray Serve' },
+					{ label: 'MLOPS', value: 'MLflow', detail: 'Artifact / version tracking' },
+					{ label: 'INFRASTRUCTURE', value: 'Azure VMs', detail: 'Training · deployment · debugging' },
+				],
+			},
+		],
 	},
 	{
 		id: 'agent-systems-state', continentId: 'experience', type: 'state', title: 'AGENT SYSTEMS STATE', label: 'AGENTS', subtitle: 'Agentic Systems & MCP',

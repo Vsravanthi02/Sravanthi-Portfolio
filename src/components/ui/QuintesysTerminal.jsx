@@ -36,6 +36,7 @@ function QuintesysTerminal({ target, onClose, onSelectState }) {
 												<div key={field.label} className={field.emphasis ? 'quintesys-work-field is-emphasis' : 'quintesys-work-field'}>
 													<span className="quintesys-work-field-label">{field.label}</span>
 													<span className="quintesys-work-field-value">{field.value}</span>
+													{field.detail && <span className="quintesys-work-field-detail">{field.detail}</span>}
 												</div>
 											))}
 										</div>
