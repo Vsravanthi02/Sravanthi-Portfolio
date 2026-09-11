@@ -7,7 +7,9 @@ import HeroScene from './HeroScene'
 import useIsMobile from '../../hooks/useIsMobile'
 import WorldHUD from '../../components/ui/WorldHUD'
 import ProjectTerminal from '../../components/ui/ProjectTerminal'
+import QuintesysTerminal from '../../components/ui/QuintesysTerminal'
 import { destinationById, destinations } from '../../data/destinations'
+import { isQuintesysTarget } from '../../data/geography'
 
 function Hero() {
 	const isMobile = useIsMobile()
@@ -105,7 +107,7 @@ function Hero() {
 	}, [])
 	useEffect(() => {
 		const handleEscape = (event) => {
-			if (event.key === 'Escape' && activeTarget?.id === 'projects') setActiveTarget(null)
+			if (event.key === 'Escape' && (activeTarget?.id === 'projects' || isQuintesysTarget(activeTarget))) setActiveTarget(null)
 		}
 		document.addEventListener('keydown', handleEscape)
 		return () => document.removeEventListener('keydown', handleEscape)
@@ -155,6 +157,7 @@ function Hero() {
 			{!worldEnabled && <div className="world-exit-card"><SectionLabel>STANDARD MODE</SectionLabel><h2>The universe is waiting.</h2><p>Return to the walkable AI station whenever you&apos;re ready to explore.</p><button type="button" className="primary-button" onClick={() => setWorldEnabled(true)}>Enter 3D World</button></div>}
 			{worldEnabled && <WorldHUD isLocked={isLocked} isExploring={isExploring} isMobile={isMobile} cameraMode={cameraMode} nearby={nearby} activeTarget={activeTarget} activeDestination={activeDestination} navigationStatus={navigationStatus} playerPosition={playerPosition} playerRotation={playerRotation} zoomValue={zoomValue} onNavigate={handleNavigationClick} onInteract={handleInteraction} onExit={exitWorld} onTouchMove={setMobileInput} onTouchLook={isMobile ? handleTouchLook : null} />}
 			{activeTarget?.id === 'projects' && <ProjectTerminal onClose={() => setActiveTarget(null)} />}
+			{isQuintesysTarget(activeTarget) && <QuintesysTerminal target={activeTarget} onClose={() => setActiveTarget(null)} onSelectState={handleInteraction} />}
 			<div className="hero-index" aria-hidden="true">01 <span>/</span> 06</div>
 			<div className="hero-corner-note" aria-hidden="true">INTELLIGENCE<br />IN MOTION</div>
 		</section>

@@ -3,6 +3,7 @@ import ControlsGuide from './ControlsGuide'
 import InteractionPrompt from './InteractionPrompt'
 import NavigationRadar from './NavigationRadar'
 import { destinationById } from '../../data/destinations'
+import { isQuintesysTarget } from '../../data/geography'
 
 function WorldHUD({ isLocked, isExploring, isMobile, cameraMode, nearby, activeTarget, activeDestination, navigationStatus, playerPosition, playerRotation, zoomValue, onNavigate, onInteract, onExit, onTouchMove, onTouchLook }) {
 	const navItems = ['ABOUT', 'EXPERIENCE', 'PROJECTS', 'SKILLS', 'CONTACT']
@@ -27,7 +28,7 @@ function WorldHUD({ isLocked, isExploring, isMobile, cameraMode, nearby, activeT
 			<NavigationRadar playerPosition={playerPosition} playerRotation={playerRotation} />
 			{zoomValue !== null && <div className="zoom-indicator" key={zoomValue}><span className="hud-kicker">CAMERA</span><div className="zoom-track"><i style={{ left: `${((zoomValue - 3.5) / (12 - 3.5)) * 100}%` }} /></div><strong>{zoomValue.toFixed(1)}</strong></div>}
 			<InteractionPrompt target={nearby} onInteract={onInteract} />
-			{activeTarget && activeTarget.id !== 'projects' && <div className={activeTarget.type === 'state' ? 'interaction-card state-card' : 'interaction-card'}><button type="button" aria-label="Close interaction" onClick={() => onInteract?.(null)}>+</button>{activeTarget.type === 'state' ? <><p className="hud-kicker">{activeTarget.title}</p><h3>{activeTarget.detail}</h3><p>{activeTarget.subtitle}</p><span className="state-card-action">EXPLORE REGION</span></> : <><p className="hud-kicker">{activeTarget.worldName || activeTarget.label}</p><h3>{activeTarget.description}</h3><p>{activeTarget.detail || 'A future destination in the portfolio universe.'}</p></>}</div>}
+			{activeTarget && activeTarget.id !== 'projects' && !isQuintesysTarget(activeTarget) && <div className={activeTarget.type === 'state' ? 'interaction-card state-card' : 'interaction-card'}><button type="button" aria-label="Close interaction" onClick={() => onInteract?.(null)}>+</button>{activeTarget.type === 'state' ? <><p className="hud-kicker">{activeTarget.title}</p><h3>{activeTarget.detail}</h3><p>{activeTarget.subtitle}</p><span className="state-card-action">EXPLORE REGION</span></> : <><p className="hud-kicker">{activeTarget.worldName || activeTarget.label}</p><h3>{activeTarget.description}</h3><p>{activeTarget.detail || 'A future destination in the portfolio universe.'}</p></>}</div>}
 			{onTouchLook && <div className="touch-look-zone" onTouchStart={onTouchLook} onTouchMove={onTouchLook} onTouchEnd={onTouchLook} aria-hidden="true" />}
 		</div>
 	)
