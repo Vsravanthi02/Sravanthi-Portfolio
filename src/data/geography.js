@@ -70,6 +70,19 @@ export const experienceStates = [
 		whatBuilt: 'MCP-based agents with tool-driven orchestration, reasoning over tool outputs, and dynamic Plotly chart generation as part of agentic workflows.',
 		technologies: ['MCP', 'Agentic AI', 'Tool Use', 'Orchestration', 'Plotly', 'Dynamic Outputs'],
 		impact: 'Tool-driven agent workflows that reason over live data and generate Plotly charts dynamically as output.',
+		workItems: [
+			{
+				id: 'mcp-agent-workflow',
+				title: 'MCP AGENT WORKFLOW',
+				subtitle: 'Agentic workflows with tool use',
+				fields: [
+					{ label: 'AGENT LAYER', value: 'MCP-based agents', detail: 'Model Context Protocol' },
+					{ label: 'ORCHESTRATION', value: 'Tool-driven orchestration', detail: 'Agentic workflows' },
+					{ label: 'REASONING', value: 'Reasoning over tool outputs' },
+					{ label: 'OUTPUT', value: 'Dynamic Plotly chart generation' },
+				],
+			},
+		],
 	},
 	{
 		id: 'bi-automation-state', continentId: 'experience', type: 'state', title: 'BI AUTOMATION STATE', label: 'BI AUTOMATION', subtitle: 'Cognos → Power BI Automation',
