@@ -25,10 +25,28 @@ function QuintesysTerminal({ target, onClose, onSelectState }) {
 							<p className="terminal-subtitle">{state.subtitle}</p>
 							<p className="terminal-description">{state.whatBuilt}</p>
 						</div>
+						{state.workItems && (
+							<div className="quintesys-work-section">
+								<p className="hud-kicker">WORK / SYSTEM</p>
+								{state.workItems.map((item) => (
+									<div key={item.id} className="quintesys-work-card">
+										<div className="quintesys-work-card-header"><strong>{item.title}</strong><span>{item.subtitle}</span></div>
+										<div className="quintesys-work-fields">
+											{item.fields.map((field) => (
+												<div key={field.label} className={field.emphasis ? 'quintesys-work-field is-emphasis' : 'quintesys-work-field'}>
+													<span className="quintesys-work-field-label">{field.label}</span>
+													<span className="quintesys-work-field-value">{field.value}</span>
+												</div>
+											))}
+										</div>
+									</div>
+								))}
+							</div>
+						)}
 						<div className={state.pipeline ? 'terminal-grid' : 'terminal-grid quintesys-grid-single'}>
 							<div className="terminal-specs">
 								<dl><dt>TECHNOLOGIES</dt><dd className="tech-list">{state.technologies.map((item) => <span key={item}>{item}</span>)}</dd></dl>
-								<dl><dt>IMPACT / RESULT</dt><dd>{state.impact}</dd></dl>
+								{!state.workItems && <dl><dt>IMPACT / RESULT</dt><dd>{state.impact}</dd></dl>}
 							</div>
 							{state.pipeline && (
 								<div className="architecture-panel">

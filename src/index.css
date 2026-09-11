@@ -115,7 +115,9 @@ h1 em { color: var(--cyan); font-style: normal; }
 @keyframes flow-pulse { 0%, 100% { opacity: 0.35; transform: scaleX(0.7); transform-origin: left; } 50% { opacity: 1; transform: scaleX(1); } }
 .world-exit-card { left: 8vw; max-width: 390px; position: absolute; top: 50%; transform: translateY(-50%); z-index: 4; }.world-exit-card .section-label { margin-bottom: 1rem; }.world-exit-card h2 { font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -0.04em; margin: 0 0 0.8rem; }.world-exit-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin: 0 0 1.5rem; }
 .quintesys-grid-single { grid-template-columns: 1fr; }
-.quintesys-breadcrumb { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; letter-spacing: inherit; padding: 0; text-decoration: underline; text-decoration-color: rgba(107, 225, 255, 0.35); text-underline-offset: 0.2em; }
+/* The adjacent h2 renders at 64px inside a 60.8px line box, so its inline box overflows upward
+   over this line and swallows the click. Lifting the breadcrumb keeps it hit-testable. */
+.quintesys-breadcrumb { background: transparent; border: 0; color: inherit; cursor: pointer; font: inherit; letter-spacing: inherit; padding: 0; position: relative; text-decoration: underline; text-decoration-color: rgba(107, 225, 255, 0.35); text-underline-offset: 0.2em; z-index: 1; }
 .quintesys-breadcrumb:hover { color: var(--cyan); }
 .quintesys-discipline-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.8rem; }
 .quintesys-discipline-card { background: rgba(19, 41, 61, 0.5); border: 1px solid rgba(107, 225, 255, 0.22); border-left: 2px solid var(--accent, var(--cyan)); cursor: pointer; display: flex; flex-direction: column; gap: 0.35rem; padding: 0.9rem 1rem; text-align: left; transition: background 180ms ease, border-color 180ms ease, transform 180ms ease; }
@@ -127,9 +129,21 @@ h1 em { color: var(--cyan); font-style: normal; }
    cleanly with the nodes at any width instead of floating at a fixed offset past a wrapped row. */
 .quintesys-pipeline-flow { row-gap: 0.5rem; }
 .quintesys-pipeline-connector { align-self: center; animation: flow-pulse 1.8s ease-in-out infinite; background: linear-gradient(90deg, #57bed7, #a993ff); flex: 0 0 auto; height: 2px; transform-origin: left; width: 0.9rem; }
+.quintesys-work-section { margin-top: 1.6rem; }
+.quintesys-work-section > .hud-kicker { margin: 0 0 0.6rem; }
+.quintesys-work-card { background: linear-gradient(150deg, rgba(4, 24, 42, 0.66), rgba(3, 14, 28, 0.42)); border: 1px solid rgba(107, 225, 255, 0.24); padding: 1rem 1.1rem; }
+.quintesys-work-card-header { align-items: baseline; border-bottom: 1px solid rgba(107, 225, 255, 0.16); display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 0.9rem; padding-bottom: 0.75rem; }
+.quintesys-work-card-header strong { color: #eaf9ff; font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.06em; }
+.quintesys-work-card-header span { color: #a993ff; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em; }
+.quintesys-work-fields { display: grid; gap: 0.85rem 1.5rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.quintesys-work-field { display: flex; flex-direction: column; gap: 0.28rem; }
+.quintesys-work-field-label { color: #6fd8f0; font-family: 'DM Mono', monospace; font-size: 0.5rem; letter-spacing: 0.13em; }
+.quintesys-work-field-value { color: #d0e2ed; font-size: 0.74rem; line-height: 1.5; }
+.quintesys-work-field.is-emphasis .quintesys-work-field-value { color: #8feaff; font-family: 'DM Mono', monospace; font-size: 0.84rem; font-weight: 600; letter-spacing: 0.03em; text-shadow: 0 0 16px rgba(107, 225, 255, 0.35); }
 @media (max-width: 800px) {
 	.quintesys-discipline-grid { grid-template-columns: 1fr; }
 	.quintesys-pipeline-connector { align-self: center; height: 0.6rem; width: 2px; }
+	.quintesys-work-fields { grid-template-columns: 1fr; }
 }
 .touch-pad, .touch-look-zone { display: none; }
 

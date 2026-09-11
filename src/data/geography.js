@@ -28,6 +28,19 @@ export const experienceStates = [
 		whatBuilt: 'QLoRA fine-tuning of Qwen2.5-Coder-7B-Instruct on 1,059 schema-annotated samples for PBIP visualContainer JSON generation, with schema-constrained generation and prompt engineering across the AI workflow.',
 		technologies: ['QLoRA', 'Qwen2.5-Coder-7B-Instruct', 'Schema-Constrained Generation', 'Prompt Engineering', 'AI Workflows'],
 		impact: '9/10 schema validity on generated PBIP visualContainer JSON.',
+		workItems: [
+			{
+				id: 'qlora-fine-tuning',
+				title: 'QLoRA FINE-TUNING',
+				subtitle: 'Qwen2.5-Coder-7B-Instruct',
+				fields: [
+					{ label: 'TRAINING DATA', value: '1,059 samples' },
+					{ label: 'TARGET', value: 'PBIP visualContainer JSON generation' },
+					{ label: 'METHOD', value: 'QLoRA' },
+					{ label: 'RESULT', value: '9/10 schema validity', emphasis: true },
+				],
+			},
+		],
 	},
 	{
 		id: 'ai-systems-state', continentId: 'experience', type: 'state', title: 'AI SYSTEMS STATE', label: 'AI SYSTEMS', subtitle: 'Production AI Architecture',
