@@ -27,26 +27,32 @@ const PINCH_ZOOM_SENSITIVITY = 0.014
 const ZOOM_SMOOTHNESS = 10
 const CAMERA_DISTANCE_SMOOTHNESS = 8
 const CAMERA_COLLISION_DISTANCE = 2.5
-const WORLD_MOVEMENT_BOUNDARY = 13.8
+// Radial clamp around the world origin so the player can't wander off into the
+// void. Must exceed the farthest stage anchor's distance from the origin —
+// the spine now reaches ~48.7 units out at What's Next, vs. ~15 in the old
+// hub-and-spoke layout, so this was raised to match (with headroom to still
+// explore past the final stage rather than hitting a wall right at it).
+const WORLD_MOVEMENT_BOUNDARY = 58
 const NAVIGATION_MIN_DURATION = 0.9
 const NAVIGATION_MAX_DURATION = 2.8
 
 function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mobileLook, mobilePinchDistance = 0, navigationTarget, onNavigationState, onPositionChange, onRotationChange, onZoomChange, onCameraModeChange, dragLookRef, explorationEnabled = false }) {
 	const { camera, raycaster, scene } = useThree()
-	const playerPosition = useRef([0, 0, 0.65])
+	const playerPosition = useRef([0, 0, -5])
 	const playerRotation = useRef(0)
 	const cameraModeRef = useRef(CAMERA_MODE.THIRD_PERSON)
 	const cameraBlend = useRef(0)
 	const cameraBlendTarget = useRef(0)
-	const cameraYaw = useRef(0)
-	const cameraYawTarget = useRef(0)
-	const cameraPitch = useRef(0.24)
-	const cameraPitchTarget = useRef(0.24)
+	const cameraYaw = useRef(Math.PI)
+	const cameraYawTarget = useRef(Math.PI)
+	const cameraPitch = useRef(0.2)
+	const cameraPitchTarget = useRef(0.2)
 	const zoomDistance = useRef(CAMERA_DEFAULT_DISTANCE)
 	const zoomTarget = useRef(CAMERA_DEFAULT_DISTANCE)
 	const cameraDistance = useRef(CAMERA_DEFAULT_DISTANCE)
 	const cameraDistanceTarget = useRef(CAMERA_DEFAULT_DISTANCE)
-	const cameraLookTarget = useRef({ x: 0, y: 0.75, z: 0.65 })
+	const cameraLookTarget = useRef({ x: 0, y: 2.6, z: 12 })
+	const stageLookTargetRef = useRef({ x: 0, y: 2.6, z: 12 })
 	const velocity = useRef([0, 0])
 	const speed = useRef(0)
 	const characterMotionRef = useRef({ speed: 0, forward: 0, strafe: 0, sprint: false })
@@ -57,7 +63,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 	const { keys, lookDelta, mobileInput: input, mobileLook: touchLook } = usePlayerMovement({ enabled, isLocked, mobileInput, mobileLook })
 
 	useEffect(() => {
-		camera.position.set(0, 4.1, 6.8)
+		camera.position.set(0, 3.14, -11.5)
 		const setZoomTarget = (distance) => {
 			zoomTarget.current = Math.max(CAMERA_MIN_DISTANCE, Math.min(CAMERA_MAX_DISTANCE, distance))
 		}
@@ -113,6 +119,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 			elapsed: 0,
 			duration: Math.max(NAVIGATION_MIN_DURATION, Math.min(NAVIGATION_MAX_DURATION, 0.85 + distance * 0.22)),
 		}
+		stageLookTargetRef.current = navigationTarget.lookAt ? { x: navigationTarget.lookAt[0], y: navigationTarget.lookAt[1], z: navigationTarget.lookAt[2] } : null
 		onNavigationState?.({ active: true, label: navigationTarget.label })
 	}, [enabled, navigationTarget, onNavigationState])
 
@@ -165,6 +172,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 			camera.lookAt(navigation.target.lookAt[0], navigation.target.lookAt[1], navigation.target.lookAt[2])
 			onPositionChange?.([...playerPosition.current])
 			if (progress >= 1) {
+				stageLookTargetRef.current = navigation.target.lookAt ? { x: navigation.target.lookAt[0], y: navigation.target.lookAt[1], z: navigation.target.lookAt[2] } : null
 				navigationRef.current = null
 				onNavigationState?.({ active: false, arrived: navigation.target.id })
 			}
@@ -172,12 +180,14 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 		}
 
 		if (!isMobile && isLocked) {
+			if (lookDelta.current.x !== 0 || lookDelta.current.y !== 0) stageLookTargetRef.current = null
 			cameraYawTarget.current -= lookDelta.current.x * CAMERA_SENSITIVITY
 			cameraPitchTarget.current = Math.max(-1.2, Math.min(1.15, cameraPitchTarget.current - lookDelta.current.y * CAMERA_SENSITIVITY))
 			lookDelta.current.x = 0
 			lookDelta.current.y = 0
 		}
 		if (!isMobile && !isLocked && dragLookRef?.current) {
+			if (dragLookRef.current.x !== 0 || dragLookRef.current.y !== 0) stageLookTargetRef.current = null
 			cameraYawTarget.current -= dragLookRef.current.x * CAMERA_SENSITIVITY
 			cameraPitchTarget.current = Math.max(-1.2, Math.min(1.15, cameraPitchTarget.current - dragLookRef.current.y * CAMERA_SENSITIVITY))
 			dragLookRef.current.x = 0
@@ -218,6 +228,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 		const forwardInput = isMobile ? -input[1] : desktopInput[1]
 		const inputLength = Math.hypot(strafe, forwardInput) || 1
 		const hasInput = strafe !== 0 || forwardInput !== 0
+		if (hasInput) stageLookTargetRef.current = null
 		// These must match the camera's actual horizontal facing, not an arbitrary basis:
 		// the camera sits at player + (sin(yaw), cos(yaw))*distance and looks back at the
 		// player (see the `direction`/lookAt math below), so its true forward is the
@@ -295,9 +306,10 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 			y: target.y + direction.y * finalRatio,
 			z: target.z + direction.z * finalRatio,
 		}
-		cameraLookTarget.current.x += (target.x - cameraLookTarget.current.x) * followAlpha
-		cameraLookTarget.current.y += (target.y - cameraLookTarget.current.y) * followAlpha
-		cameraLookTarget.current.z += (target.z - cameraLookTarget.current.z) * followAlpha
+		const lookGoal = stageLookTargetRef.current || target
+		cameraLookTarget.current.x += (lookGoal.x - cameraLookTarget.current.x) * followAlpha
+		cameraLookTarget.current.y += (lookGoal.y - cameraLookTarget.current.y) * followAlpha
+		cameraLookTarget.current.z += (lookGoal.z - cameraLookTarget.current.z) * followAlpha
 
 		// First-person/third-person is purely a camera-presentation blend: it reuses the
 		// same player position, yaw/pitch and the outward `direction` already computed for

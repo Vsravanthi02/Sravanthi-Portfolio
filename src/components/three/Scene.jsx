@@ -1,15 +1,15 @@
+import * as THREE from 'three'
 import { Canvas } from '@react-three/fiber'
 import { useEffect, useRef, useState } from 'react'
 import Camera from './Camera'
 import Lighting from './Lighting'
 import Particles from './Particles'
 import PostProcessing from './PostProcessing'
-import StarField from './StarField'
 import World from './World'
 import useIsMobile from '../../hooks/useIsMobile'
 import usePointerLock from '../../hooks/usePointerLock'
 
-function Scene({ enabled = true, mobileInput = [0, 0], mobileLook = [0, 0], mobilePinchDistance = 0, navigationTarget, onLockChange, onNavigationState, onNearby, onInteract, onPositionChange, onRotationChange, onZoomChange, onCameraModeChange, selectedStateId, onExplorationChange }) {
+function Scene({ enabled = true, mobileInput = [0, 0], mobileLook = [0, 0], mobilePinchDistance = 0, navigationTarget, onLockChange, onNavigationState, onNearby, onInteract, onPositionChange, onRotationChange, onZoomChange, onCameraModeChange, selectedStateId, activeDestination, onExplorationChange }) {
 	const isMobile = useIsMobile()
 	const playerPositionRef = useRef([0, 0, 0.65])
 	const lastTelemetry = useRef(0)
@@ -66,15 +66,23 @@ function Scene({ enabled = true, mobileInput = [0, 0], mobileLook = [0, 0], mobi
 		}
 	}
 
+	// Spark's new architecture (arch, wing walls, distant ridgelines) sits much
+	// farther out than any other chapter's content, so its far plane is wider —
+	// every other stage keeps the original (10, 26) untouched.
+	// Spark's monumental architecture sits farther out so its far plane is wider.
+	const fogFar = activeDestination === 'home' ? 56 : 26
+	const fogNear = activeDestination === 'home' ? 16 : 10
+	const fogColor = activeDestination === 'home' ? '#1c2842' : '#0a0e16'
+
 	return (
-		<Canvas dpr={isMobile ? 1 : [1, 1.5]} camera={{ position: [0, 3.3, 5.6], fov: 50 }} gl={{ antialias: true, alpha: true }} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp} onDoubleClick={handleDoubleClick}>
-			<fog attach="fog" args={['#070b16', 8, 16]} />
+		<Canvas dpr={isMobile ? 1 : [1, 1.5]} camera={{ position: [0, 3.14, -11.5], fov: 56 }} gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.85 }} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp} onDoubleClick={handleDoubleClick}>
+			{/* Atmospheric fog blending distant boundaries into the deep navy/blue-violet sky */}
+			<fog attach="fog" args={[fogColor, fogNear, fogFar]} />
 			<Camera />
-			<Lighting />
-			<StarField count={reducedMotion || isMobile ? 140 : 360} />
-			<Particles count={reducedMotion || isMobile ? 30 : 80} reducedMotion={reducedMotion} />
+			<Lighting stage={activeDestination} />
+			<Particles count={reducedMotion || isMobile ? 18 : 46} reducedMotion={reducedMotion} />
 			<World isMobile={isMobile} enabled={enabled} isLocked={isLocked} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onNavigationState={onNavigationState} playerPositionRef={playerPositionRef} onPositionChange={handlePositionChange} onRotationChange={handleRotationChange} onZoomChange={onZoomChange} onCameraModeChange={onCameraModeChange} onNearby={onNearby} onInteract={onInteract} selectedStateId={selectedStateId} dragLookRef={dragLookRef} explorationEnabled={explorationEnabled} />
-			<PostProcessing />
+			<PostProcessing isMobile={isMobile} />
 		</Canvas>
 	)
 }

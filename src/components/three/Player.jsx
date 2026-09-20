@@ -1,86 +1,161 @@
-import { useRef } from 'react'
+import { Component, Suspense, useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useAnimations, useGLTF } from '@react-three/drei'
 
-// Single source of truth for the avatar's eye height, so the first-person
-// camera derives it from the actual rig instead of a hardcoded guess.
-export const PLAYER_TORSO_Y = 1.28
-export const PLAYER_HEAD_OFFSET_Y = 0.78
+// ── Drop a real character model here ────────────────────────────────────────
+// Put a rigged GLB export (Mixamo, Ready Player Me, Blender, a licensed
+// low-poly character asset, etc.) at this exact path and it is picked up
+// automatically — nothing else in this file needs to change:
+//
+//   public/models/explorer.glb
+//
+// Until that file exists, PlayerFallback below renders instead (see PROJECT
+// NOTES at the bottom of this file for what to do when the model arrives).
+const MODEL_URL = '/models/explorer.glb'
+
+// Tune once the real model is in: uniform scale to hit ~60-70% of the previous
+// robot's apparent height, and a yaw correction if the export's forward axis
+// isn't +Z (rotate by Math.PI if the character appears to walk backwards).
+const MODEL_SCALE = 1
+const MODEL_YAW_OFFSET = 0
+
+// Best-guess world-space eye height for the first-person camera. Once the real
+// model is in, measure its actual head height (e.g. log a THREE.Box3 around
+// the head bone) and replace these two numbers — PlayerController imports
+// PLAYER_EYE_HEIGHT as a plain constant, so it isn't derived automatically.
+export const PLAYER_TORSO_Y = 0.82
+export const PLAYER_HEAD_OFFSET_Y = 0.55
 export const PLAYER_EYE_HEIGHT = PLAYER_TORSO_Y + PLAYER_HEAD_OFFSET_Y
+
+// Fuzzy-matched against the loaded model's animation clip names so this works
+// with common exports (Mixamo names things "Idle"/"Walking", others differ)
+// without hardcoding one naming scheme.
+const IDLE_NAME_HINTS = ['idle', 'stand']
+const WALK_NAME_HINTS = ['walk', 'run', 'jog', 'move']
+
+function pickClip(names, hints) {
+	const lower = names.map((n) => n.toLowerCase())
+	for (const hint of hints) {
+		const index = lower.findIndex((n) => n.includes(hint))
+		if (index !== -1) return names[index]
+	}
+	return null
+}
+
+// Drives the loaded GLTF: plays + crossfades idle/walk clips if present, and
+// exposes the root object so the outer rig can hide it in first person.
+function PlayerModel({ motionRef, modelRootRef }) {
+	const { scene, animations } = useGLTF(MODEL_URL)
+	const { actions, names } = useAnimations(animations, modelRootRef)
+	const idleName = pickClip(names, IDLE_NAME_HINTS)
+	const walkName = pickClip(names, WALK_NAME_HINTS)
+
+	useEffect(() => {
+		const idle = idleName && actions[idleName]
+		const walk = walkName && actions[walkName]
+		idle?.reset().play()
+		walk?.reset().play()
+		return () => { idle?.stop(); walk?.stop() }
+	}, [actions, idleName, walkName])
+
+	useFrame((_, delta) => {
+		const motion = motionRef?.current || { speed: 0 }
+		const moving = Math.min(1, motion.speed / 3.35)
+		const idle = idleName && actions[idleName]
+		const walk = walkName && actions[walkName]
+		// Crossfade by weight rather than switching clips outright — avoids a
+		// visible pop the instant speed crosses zero.
+		if (idle) idle.setEffectiveWeight(1 - moving)
+		if (walk) walk.setEffectiveWeight(moving)
+		if (!idle && !walk) return
+		void delta
+	})
+
+	return <primitive ref={modelRootRef} object={scene} scale={MODEL_SCALE} rotation={[0, MODEL_YAW_OFFSET, 0]} />
+}
+
+// Deliberately NOT a body. A placeholder attempting to look human (even a
+// simple capsule-with-a-head-on-top) is exactly the "primitive human" this
+// pipeline exists to avoid — so while explorer.glb is missing, this renders as
+// a neutral presence marker instead: a soft vertical glow anchored at the
+// player's feet, with no text (text rigidly attached to the rotating player
+// root faces away from a third-person camera positioned behind the player,
+// showing its unreadable/mirrored back face — a marker with no text sidesteps
+// that entirely). Swap happens automatically the moment MODEL_URL resolves to
+// a real file.
+function PlayerFallback({ modelRootRef }) {
+	return (
+		<group ref={modelRootRef}>
+			<mesh position={[0, 0.55, 0]}><cylinderGeometry args={[0.035, 0.07, 1.0, 12, 1, true]} /><meshBasicMaterial color="#62ddff" transparent opacity={0.05} depthWrite={false} /></mesh>
+			<mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}><ringGeometry args={[0.16, 0.2, 24]} /><meshBasicMaterial color="#62ddff" transparent opacity={0.35} /></mesh>
+			<pointLight color="#62ddff" intensity={0.25} distance={1.2} position={[0, 0.4, 0]} />
+		</group>
+	)
+}
+
+class ModelErrorBoundary extends Component {
+	constructor(props) {
+		super(props)
+		this.state = { failed: false }
+	}
+
+	static getDerivedStateFromError() {
+		return { failed: true }
+	}
+
+	componentDidCatch(error) {
+		// Expected until a real model is placed at MODEL_URL — logged once for
+		// visibility, not surfaced to the player.
+		console.warn('[Player] character model unavailable, using fallback:', error?.message || error)
+	}
+
+	render() {
+		return this.state.failed ? this.props.fallback : this.props.children
+	}
+}
 
 function Player({ position, rotationRef, motionRef, cameraModeRef, cameraBlendRef }) {
 	const groupRef = useRef()
-	const torsoRef = useRef()
-	const headRef = useRef()
-	const leftArmRef = useRef()
-	const rightArmRef = useRef()
-	const leftLegRef = useRef()
-	const rightLegRef = useRef()
+	const modelRootRef = useRef()
 
-	useFrame((state) => {
+	useFrame(() => {
 		if (!groupRef.current) return
-		const motion = motionRef?.current || { speed: 0, forward: 0, strafe: 0, sprint: false }
-		const moving = Math.min(1, motion.speed / 3.35)
-		const cadence = motion.sprint ? 11 : 7.2
-		const stride = Math.sin(state.clock.elapsedTime * cadence) * (motion.sprint ? 0.58 : 0.38) * moving
-		const direction = motion.forward < -0.1 ? -1 : 1
-		const breath = Math.sin(state.clock.elapsedTime * 1.7) * 0.012 * (1 - moving)
-		const lean = motion.sprint ? -0.11 * moving : -0.035 * moving
-
 		groupRef.current.position.set(...position)
 		groupRef.current.rotation.y = rotationRef.current
-		torsoRef.current.position.y = PLAYER_TORSO_Y + breath
-		torsoRef.current.rotation.x = lean
-		torsoRef.current.rotation.z = -motion.strafe * 0.055 * moving
-		headRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 1.1) * 0.025 * (1 - moving)
-		// Hide the head past the midpoint of the first-person transition so it
-		// doesn't clip the camera once the view sits at eye level; body/arms stay visible.
-		headRef.current.visible = !((cameraModeRef?.current === 'FIRST_PERSON') && (cameraBlendRef?.current ?? 0) > 0.5)
-		leftLegRef.current.rotation.x = stride * direction
-		rightLegRef.current.rotation.x = -stride * direction
-		leftArmRef.current.rotation.x = -stride * 0.72 * direction
-		rightArmRef.current.rotation.x = stride * 0.72 * direction
-		leftArmRef.current.rotation.z = -0.08 - motion.strafe * 0.12 * moving
-		rightArmRef.current.rotation.z = 0.08 - motion.strafe * 0.12 * moving
+		// First person hides the whole model rather than a specific head node —
+		// we don't know the loaded model's bone/mesh names in advance. Once the
+		// real model is in, this can target just its head bone/mesh by name
+		// (e.g. modelRootRef.current.getObjectByName('Head')) to keep the body
+		// visible in first person the way the previous rig did.
+		if (modelRootRef.current) {
+			modelRootRef.current.visible = !((cameraModeRef?.current === 'FIRST_PERSON') && (cameraBlendRef?.current ?? 0) > 0.5)
+		}
 	})
 
 	return (
 		<group ref={groupRef} userData={{ cameraIgnore: true }}>
-			{/* Feet are the root pivot: the visual never changes the authoritative player position. */}
-			<group ref={leftLegRef} position={[-0.13, 0.77, 0]}>
-				<mesh position={[0, -0.31, 0]}><capsuleGeometry args={[0.115, 0.38, 4, 8]} /><meshStandardMaterial color="#182638" metalness={0.72} roughness={0.38} /></mesh>
-				<mesh position={[0, -0.66, 0.06]} scale={[1.18, 0.6, 1.52]}><boxGeometry args={[0.19, 0.17, 0.26]} /><meshStandardMaterial color="#101b2a" metalness={0.8} roughness={0.28} /></mesh>
-			</group>
-			<group ref={rightLegRef} position={[0.13, 0.77, 0]}>
-				<mesh position={[0, -0.31, 0]}><capsuleGeometry args={[0.115, 0.38, 4, 8]} /><meshStandardMaterial color="#182638" metalness={0.72} roughness={0.38} /></mesh>
-				<mesh position={[0, -0.66, 0.06]} scale={[1.18, 0.6, 1.52]}><boxGeometry args={[0.19, 0.17, 0.26]} /><meshStandardMaterial color="#101b2a" metalness={0.8} roughness={0.28} /></mesh>
-			</group>
-			<mesh position={[0, 0.8, 0]}><cylinderGeometry args={[0.25, 0.28, 0.16, 10]} /><meshStandardMaterial color="#26394d" metalness={0.76} roughness={0.32} /></mesh>
-			<group ref={torsoRef} position={[0, 1.28, 0]}>
-				<mesh><capsuleGeometry args={[0.31, 0.62, 6, 12]} /><meshStandardMaterial color="#1e3044" metalness={0.72} roughness={0.32} /></mesh>
-				<mesh position={[0, 0.08, 0.292]} scale={[0.72, 1.55, 0.22]}><boxGeometry args={[0.36, 0.44, 0.08]} /><meshStandardMaterial color="#29445a" metalness={0.82} roughness={0.26} /></mesh>
-				<mesh position={[0, 0.16, 0.345]}><boxGeometry args={[0.045, 0.28, 0.018]} /><meshBasicMaterial color="#62ddff" /></mesh>
-				<mesh position={[0, 0.47, 0.1]}><boxGeometry args={[0.6, 0.085, 0.48]} /><meshStandardMaterial color="#2a4054" metalness={0.85} roughness={0.28} /></mesh>
-				<mesh position={[0, 0.03, -0.33]} scale={[1.05, 0.82, 0.3]}><boxGeometry args={[0.32, 0.27, 0.15]} /><meshStandardMaterial color="#20384d" emissive="#0d5972" emissiveIntensity={0.32} metalness={0.82} roughness={0.26} /></mesh>
-				<group ref={leftArmRef} position={[-0.38, 0.25, 0]}>
-					<mesh position={[0, -0.26, 0]} rotation={[0, 0, -0.1]}><capsuleGeometry args={[0.075, 0.39, 4, 8]} /><meshStandardMaterial color="#263d51" metalness={0.72} roughness={0.3} /></mesh>
-					<mesh position={[0, -0.55, 0]}><sphereGeometry args={[0.085, 10, 8]} /><meshStandardMaterial color="#71899a" roughness={0.58} /></mesh>
-					<mesh position={[0, -0.43, 0.08]}><boxGeometry args={[0.12, 0.08, 0.04]} /><meshBasicMaterial color="#64dcff" /></mesh>
-				</group>
-				<group ref={rightArmRef} position={[0.38, 0.25, 0]}>
-					<mesh position={[0, -0.26, 0]} rotation={[0, 0, 0.1]}><capsuleGeometry args={[0.075, 0.39, 4, 8]} /><meshStandardMaterial color="#263d51" metalness={0.72} roughness={0.3} /></mesh>
-					<mesh position={[0, -0.55, 0]}><sphereGeometry args={[0.085, 10, 8]} /><meshStandardMaterial color="#71899a" roughness={0.58} /></mesh>
-				</group>
-				<mesh position={[0, 0.52, 0]}><cylinderGeometry args={[0.1, 0.12, 0.16, 10]} /><meshStandardMaterial color="#687f91" metalness={0.45} roughness={0.46} /></mesh>
-				<group ref={headRef} position={[0, 0.78, 0.01]}>
-					<mesh scale={[0.92, 1.08, 0.88]}><sphereGeometry args={[0.23, 16, 12]} /><meshStandardMaterial color="#9a7568" roughness={0.58} metalness={0.08} /></mesh>
-					<mesh position={[0, 0.1, -0.035]} scale={[0.98, 0.53, 0.94]}><sphereGeometry args={[0.235, 16, 10]} /><meshStandardMaterial color="#182435" roughness={0.72} /></mesh>
-					<mesh position={[0, -0.015, 0.208]} scale={[0.68, 0.34, 0.18]}><sphereGeometry args={[0.18, 12, 8]} /><meshStandardMaterial color="#263f54" emissive="#276f8b" emissiveIntensity={0.24} metalness={0.72} roughness={0.2} /></mesh>
-					<mesh position={[0, -0.015, 0.235]}><boxGeometry args={[0.16, 0.018, 0.012]} /><meshBasicMaterial color="#75e7ff" /></mesh>
-				</group>
-			</group>
-			<pointLight color="#62ddff" intensity={1.15} distance={2.6} position={[0, 1.4, 0.38]} />
+			<ModelErrorBoundary fallback={<PlayerFallback modelRootRef={modelRootRef} />}>
+				<Suspense fallback={<PlayerFallback modelRootRef={modelRootRef} />}>
+					<PlayerModel motionRef={motionRef} modelRootRef={modelRootRef} />
+				</Suspense>
+			</ModelErrorBoundary>
 		</group>
 	)
 }
 
 export default Player
+
+// ── Notes for when a real model is dropped in ───────────────────────────────
+// 1. Export a GLB with the character in a T/A-pose or already rigged with an
+//    idle + walk cycle (Mixamo is the fastest path: any humanoid model ->
+//    auto-rig -> download "Idle" and "Walking" as separate FBX/GLB, or export
+//    one GLB containing both clips).
+// 2. Place it at public/models/explorer.glb — no code change needed.
+// 3. Check the console for the ModelErrorBoundary warning to confirm it's
+//    actually loading (the warning disappears once it loads successfully).
+// 4. If the character faces the wrong way, set MODEL_YAW_OFFSET = Math.PI.
+// 5. If it's too big/small next to the world, adjust MODEL_SCALE — target
+//    roughly 1.3-1.5 world units tall (60-70% of the previous robot).
+// 6. Update PLAYER_TORSO_Y / PLAYER_HEAD_OFFSET_Y to the model's real
+//    chest/eye heights (in the same 0-1.5-ish unit range) for a correctly
+//    framed third-person pivot and first-person eye level.

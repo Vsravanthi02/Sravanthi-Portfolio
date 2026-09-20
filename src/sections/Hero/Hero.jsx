@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
-import Button from '../../components/common/Button'
+import { ArrowUpRight } from 'lucide-react'
 import SectionLabel from '../../components/common/SectionLabel'
 import HeroScene from './HeroScene'
 import useIsMobile from '../../hooks/useIsMobile'
@@ -19,17 +18,13 @@ function Hero() {
 	const [cameraMode, setCameraMode] = useState('THIRD_PERSON')
 	const [nearby, setNearby] = useState(null)
 	const [activeTarget, setActiveTarget] = useState(null)
-	const [playerPosition, setPlayerPosition] = useState([0, 0, 0.65])
-	const [playerRotation, setPlayerRotation] = useState(0)
 	const [mobileInput, setMobileInput] = useState([0, 0])
 	const [mobileLook, setMobileLook] = useState([0, 0])
 	const [mobilePinchDistance, setMobilePinchDistance] = useState(0)
-	const [zoomValue, setZoomValue] = useState(null)
 	const [navigationTarget, setNavigationTarget] = useState(null)
 	const [navigationStatus, setNavigationStatus] = useState(null)
 	const [activeDestination, setActiveDestination] = useState(() => window.location.hash.slice(1) || 'home')
 	const touchOrigin = useRef(null)
-	const zoomTimer = useRef(null)
 	const activeDestinationRef = useRef(activeDestination)
 	const previousDestinationRef = useRef(activeDestination)
 	const suppressHashNavigation = useRef(false)
@@ -38,12 +33,6 @@ function Hero() {
 		document.body.classList.toggle('is-exploring-world', isLocked)
 		return () => document.body.classList.remove('is-exploring-world')
 	}, [isLocked])
-	useEffect(() => () => clearTimeout(zoomTimer.current), [])
-	const handleZoomChange = useCallback((value) => {
-		setZoomValue(value)
-		clearTimeout(zoomTimer.current)
-		zoomTimer.current = setTimeout(() => setZoomValue(null), 1100)
-	}, [])
 	const handleInteraction = useCallback((target) => {
 		if (target) setActiveTarget(target)
 		else setActiveTarget(null)
@@ -92,7 +81,6 @@ function Hero() {
 		}
 	}, [])
 	const handlePositionChange = useCallback((position) => {
-		setPlayerPosition(position)
 		if (navigationActiveRef.current) return
 		const nearbyDestination = destinations.filter((destination) => destination.position).reduce((closest, destination) => {
 			const distance = Math.hypot(position[0] - destination.position[0], position[2] - destination.position[2])
@@ -137,25 +125,20 @@ function Hero() {
 		if (!touchOrigin.current) touchOrigin.current = { x: touch.clientX, y: touch.clientY }
 		setMobileLook([(touch.clientX - touchOrigin.current.x) * 0.08, (touch.clientY - touchOrigin.current.y) * 0.08])
 	}
+	const titlingHidden = isLocked || isExploring || activeDestination !== 'home'
 	return (
 		<section className="hero" id="home">
-			<div className="hero-grid" />
-			<HeroScene enabled={worldEnabled} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onLockChange={setIsLocked} onNavigationState={handleNavigationState} onNearby={setNearby} onInteract={handleInteraction} onPositionChange={handlePositionChange} onRotationChange={setPlayerRotation} onZoomChange={handleZoomChange} onCameraModeChange={setCameraMode} selectedStateId={activeTarget?.type === 'state' ? activeTarget.id : null} onExplorationChange={setIsExploring} />
-			<div className={isLocked ? 'hero-content is-exploring' : activeDestination === 'experience' ? 'hero-content is-experience' : 'hero-content'}>
-				<motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-					<SectionLabel>AI / GENAI ENGINEER</SectionLabel>
-					<p className="hero-intro">Hi, I&apos;m</p>
-					<h1>Sravanthi <em>Addagada</em></h1>
-					<p className="hero-role">AI / GenAI Engineer</p>
-					<p className="hero-description">Building intelligent systems that turn complex data into real-world impact.</p>
+			<HeroScene enabled={worldEnabled} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onLockChange={setIsLocked} onNavigationState={handleNavigationState} onNearby={setNearby} onInteract={handleInteraction} onPositionChange={handlePositionChange} onCameraModeChange={setCameraMode} selectedStateId={activeTarget?.type === 'state' ? activeTarget.id : null} activeDestination={activeDestination} onExplorationChange={setIsExploring} />
+			<div className="hero-overlay">
+				<motion.div className={titlingHidden ? 'hero-actions-bar is-hidden' : 'hero-actions-bar'} initial={{ opacity: 0 }} animate={titlingHidden ? { opacity: 0 } : { opacity: 1 }} transition={{ duration: 0.7, delay: 0.15 }} style={{ pointerEvents: titlingHidden ? 'none' : 'auto' }}>
 					<div className="hero-actions">
-						<Button>Explore My Work</Button>
-						<a className="scroll-prompt" href="#about"><span>Scroll to explore</span><ChevronDown size={15} /></a>
+						<button type="button" className="primary-button" onClick={() => handleNavigationClick('projects')}><span>WALK THE BUILD</span><ArrowUpRight size={17} strokeWidth={1.8} /></button>
+						<button type="button" className="primary-button secondary-cta" onClick={() => handleNavigationClick('experience')}><span>MEET THE ENGINEER</span><ArrowUpRight size={17} strokeWidth={1.8} /></button>
 					</div>
 				</motion.div>
 			</div>
 			{!worldEnabled && <div className="world-exit-card"><SectionLabel>STANDARD MODE</SectionLabel><h2>The universe is waiting.</h2><p>Return to the walkable AI station whenever you&apos;re ready to explore.</p><button type="button" className="primary-button" onClick={() => setWorldEnabled(true)}>Enter 3D World</button></div>}
-			{worldEnabled && <WorldHUD isLocked={isLocked} isExploring={isExploring} isMobile={isMobile} cameraMode={cameraMode} nearby={nearby} activeTarget={activeTarget} activeDestination={activeDestination} navigationStatus={navigationStatus} playerPosition={playerPosition} playerRotation={playerRotation} zoomValue={zoomValue} onNavigate={handleNavigationClick} onInteract={handleInteraction} onExit={exitWorld} onTouchMove={setMobileInput} onTouchLook={isMobile ? handleTouchLook : null} />}
+			{worldEnabled && <WorldHUD isLocked={isLocked} isExploring={isExploring} isMobile={isMobile} cameraMode={cameraMode} nearby={nearby} activeTarget={activeTarget} activeDestination={activeDestination} navigationStatus={navigationStatus} onInteract={handleInteraction} onExit={exitWorld} onTouchMove={setMobileInput} onTouchLook={isMobile ? handleTouchLook : null} />}
 			{activeTarget?.id === 'projects' && <ProjectTerminal onClose={() => setActiveTarget(null)} />}
 			{isQuintesysTarget(activeTarget) && <QuintesysTerminal target={activeTarget} onClose={() => setActiveTarget(null)} onSelectState={handleInteraction} />}
 			<div className="hero-index" aria-hidden="true">01 <span>/</span> 06</div>

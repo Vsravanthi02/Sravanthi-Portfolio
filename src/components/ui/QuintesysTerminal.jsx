@@ -28,6 +28,7 @@ function QuintesysTerminal({ target, onClose, onSelectState }) {
 						{state.workItems && (
 							<div className="quintesys-work-section">
 								<p className="hud-kicker">WORK / SYSTEM</p>
+								<div className={state.workItems.length > 1 ? 'quintesys-work-grid is-split' : 'quintesys-work-grid'}>
 								{state.workItems.map((item) => (
 									<div key={item.id} className="quintesys-work-card">
 										<div className="quintesys-work-card-header"><strong>{item.title}</strong><span>{item.subtitle}</span></div>
@@ -42,6 +43,7 @@ function QuintesysTerminal({ target, onClose, onSelectState }) {
 										</div>
 									</div>
 								))}
+								</div>
 							</div>
 						)}
 						<div className={state.pipeline ? 'terminal-grid' : 'terminal-grid quintesys-grid-single'}>

@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 
-const links = ['Home', 'About', 'Experience', 'Projects', 'Skills', 'Contact']
+// Display labels only — ids match src/data/destinations.js exactly so hash
+// routing/fly-to navigation is untouched.
+const links = [
+	{ id: 'home', label: 'THE SPARK' },
+	{ id: 'projects', label: 'THE BUILD' },
+	{ id: 'experience', label: 'ENGINEER' },
+	{ id: 'skills', label: 'TOOLKIT' },
+	{ id: 'about', label: 'THE PERSON' },
+	{ id: 'contact', label: "WHAT'S NEXT" },
+]
 
 function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
@@ -26,8 +35,8 @@ function Navbar() {
 			</a>
 			<nav className={isOpen ? 'nav-links is-open' : 'nav-links'} aria-label="Primary navigation">
 				{links.map((link) => (
-					<a key={link} className={activeId === (link === 'Home' ? 'home' : link.toLowerCase()) ? 'is-active' : ''} href={link === 'Home' ? '#home' : `#${link.toLowerCase()}`} onClick={(event) => navigate(event, link === 'Home' ? 'home' : link.toLowerCase())}>
-						{link}
+					<a key={link.id} className={activeId === link.id ? 'is-active' : ''} href={`#${link.id}`} onClick={(event) => navigate(event, link.id)}>
+						{link.label}
 					</a>
 				))}
 			</nav>

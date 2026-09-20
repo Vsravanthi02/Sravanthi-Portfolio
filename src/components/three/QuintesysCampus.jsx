@@ -4,13 +4,29 @@ import BillboardLabel from './BillboardLabel'
 import { destinationById } from '../../data/destinations'
 import { experienceStates, quintesysGeography } from '../../data/geography'
 
-function StateRoute({ start, end, color }) {
+// A small emissive pulse travelling core->state and back — the hub-and-spoke
+// shape reads as "engineering system with data flowing to specializations"
+// rather than "campus map" once something is visibly moving through it.
+function FlowPulse({ start, end, offset }) {
+	const ref = useRef()
+	useFrame((state) => {
+		if (!ref.current) return
+		const t = (Math.sin(state.clock.elapsedTime * 0.6 + offset) + 1) / 2
+		ref.current.position.set(start[0] + (end[0] - start[0]) * t, 0.16, start[2] + (end[2] - start[2]) * t)
+	})
+	return <mesh ref={ref}><sphereGeometry args={[0.028, 8, 6]} /><meshBasicMaterial color="#8feaff" /></mesh>
+}
+
+function StateRoute({ start, end, color, index }) {
 	const dx = end[0] - start[0]
 	const dz = end[2] - start[2]
 	const length = Math.hypot(dx, dz)
-	return <group position={[(start[0] + end[0]) / 2, 0.15, (start[2] + end[2]) / 2]} rotation={[0, -Math.atan2(dz, dx), 0]}>
-		<mesh><boxGeometry args={[0.15, 0.018, length]} /><meshStandardMaterial color="#355368" emissive={color} emissiveIntensity={0.1} roughness={0.7} /></mesh>
-		<mesh position={[0, 0.012, 0]}><boxGeometry args={[0.025, 0.006, length * 0.86]} /><meshBasicMaterial color={color} transparent opacity={0.32} /></mesh>
+	return <group>
+		<group position={[(start[0] + end[0]) / 2, 0.15, (start[2] + end[2]) / 2]} rotation={[0, -Math.atan2(dz, dx), 0]}>
+			<mesh><boxGeometry args={[0.15, 0.018, length]} /><meshStandardMaterial color="#355368" emissive={color} emissiveIntensity={0.1} roughness={0.7} /></mesh>
+			<mesh position={[0, 0.012, 0]}><boxGeometry args={[0.025, 0.006, length * 0.86]} /><meshBasicMaterial color={color} transparent opacity={0.32} /></mesh>
+		</group>
+		<FlowPulse start={start} end={end} offset={index * 1.7} />
 	</group>
 }
 
@@ -44,10 +60,30 @@ function GeographicState({ state, selected, dimmed, onSelect }) {
 	</group>
 }
 
+// A physically walkable rendering of BI Automation's real 8-stage pipeline
+// (src/data/geography.js) near the core — reinforces "walk alongside the
+// pipeline" without touching QuintesysTerminal.jsx's own pipeline UI or the
+// state-selection logic above.
+function PipelineStrip({ pipeline, origin }) {
+	const spacing = 0.62
+	const totalWidth = (pipeline.length - 1) * spacing
+	return (
+		<group position={[origin[0] - totalWidth / 2, 0.14, origin[2] + 1.9]}>
+			{pipeline.map(([label], index) => (
+				<group key={label} position={[index * spacing, 0, 0]}>
+					<mesh><boxGeometry args={[0.12, 0.12, 0.12]} /><meshStandardMaterial color="#233a4a" emissive="#68d9ef" emissiveIntensity={0.32} metalness={0.6} roughness={0.4} /></mesh>
+					{index < pipeline.length - 1 && <mesh position={[spacing / 2, 0, 0]}><boxGeometry args={[spacing - 0.12, 0.012, 0.012]} /><meshBasicMaterial color="#4a7f96" transparent opacity={0.55} /></mesh>}
+				</group>
+			))}
+		</group>
+	)
+}
+
 function QuintesysCampus({ selectedStateId, onSelect }) {
 	const continent = destinationById.experience
 	const [x, , z] = quintesysGeography.center
 	const selected = experienceStates.find((state) => state.id === selectedStateId)
+	const automationPipeline = experienceStates.find((state) => state.id === 'bi-automation-state')?.pipeline
 	return <group>
 		{/* Connected terrain masses create one irregular continent; states retain their own hit areas above it. */}
 		<group position={[x, 0, z]} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onSelect(continent) }} onDoubleClick={(event) => event.stopPropagation()} onPointerOver={() => { document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = '' }}>
@@ -59,9 +95,10 @@ function QuintesysCampus({ selectedStateId, onSelect }) {
 			<mesh position={[0, 0.63, 0]} rotation={[0.3, 0.4, 0]}><octahedronGeometry args={[0.18, 1]} /><meshStandardMaterial color="#4c8496" emissive={continent.colorTheme} emissiveIntensity={0.35} metalness={0.75} roughness={0.25} /></mesh>
 			<pointLight color={continent.colorTheme} intensity={1.8} distance={4.5} position={[0, 1.1, 0]} />
 			<BillboardLabel position={[0, 1.75, 0]} fontSize={0.15} color="#d8f8ff" anchorX="center" anchorY="middle" letterSpacing={0.1} outlineWidth={0.008} outlineColor="#07111d">QUINTESYS</BillboardLabel>
-			<BillboardLabel position={[0, 1.51, 0]} fontSize={0.064} color="#a7d2df" anchorX="center" anchorY="middle" letterSpacing={0.07} outlineWidth={0.006} outlineColor="#07111d">AI ENGINEERING CONTINENT</BillboardLabel>
+			<BillboardLabel position={[0, 1.51, 0]} fontSize={0.064} color="#a7d2df" anchorX="center" anchorY="middle" letterSpacing={0.07} outlineWidth={0.006} outlineColor="#07111d">AI ENGINEERING, WALKED AS A PIPELINE</BillboardLabel>
 		</group>
-		{experienceStates.map((state) => <StateRoute key={`route-${state.id}`} start={quintesysGeography.corePosition} end={state.position} color={state.theme} />)}
+		{automationPipeline && <PipelineStrip pipeline={automationPipeline} origin={quintesysGeography.corePosition} />}
+		{experienceStates.map((state, index) => <StateRoute key={`route-${state.id}`} start={quintesysGeography.corePosition} end={state.position} color={state.theme} index={index} />)}
 		{experienceStates.map((state) => <GeographicState key={state.id} state={state} selected={state.id === selectedStateId} dimmed={Boolean(selectedStateId) && state.id !== selectedStateId} onSelect={onSelect} />)}
 		{selected && <BillboardLabel position={[x, 2.02, z]} fontSize={0.06} color={selected.theme} anchorX="center" anchorY="middle" letterSpacing={0.08}>{selected.title} SELECTED</BillboardLabel>}
 	</group>
