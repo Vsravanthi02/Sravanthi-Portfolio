@@ -20,22 +20,25 @@ function createGlobalSkyTexture() {
 	const ctx = canvas.getContext('2d')
 
 	// 1. CELESTIAL SKY DOME (Smooth, continuous sunset gradient)
+	// 1. CELESTIAL SKY DOME (Smooth, continuous sunset gradient)
+	// y = 0 is zenith (+Y), y = 512 is horizon (Y = 0), y = 1024 is nadir (-Y)
 	const grad = ctx.createLinearGradient(0, 0, 0, 1024)
-	grad.addColorStop(0.00, '#070d1e') // Deep midnight sapphire zenith
-	grad.addColorStop(0.20, '#0e1834') // Twilight navy
-	grad.addColorStop(0.38, '#1a2448') // Sapphire blue
-	grad.addColorStop(0.50, '#282040') // Dusk mauve transition
-	grad.addColorStop(0.58, '#4c2634') // Rose-plum twilight
-	grad.addColorStop(0.64, '#8a4020') // Warm sunset amber
-	grad.addColorStop(0.69, '#c86c28') // Golden horizon glow
-	grad.addColorStop(0.73, '#df943c') // Warmest horizon band
-	grad.addColorStop(0.77, '#1e1622') // Mountain horizon line
-	grad.addColorStop(1.00, '#080a10') // Lower ground
+	grad.addColorStop(0.00, '#060c18') // Deep midnight sapphire zenith
+	grad.addColorStop(0.18, '#0e1834') // Twilight navy
+	grad.addColorStop(0.30, '#1a2244') // Indigo blue
+	grad.addColorStop(0.38, '#2e1e38') // Dusk mauve transition
+	grad.addColorStop(0.44, '#562432') // Rose-plum twilight
+	grad.addColorStop(0.47, '#8e3c20') // Warm sunset amber
+	grad.addColorStop(0.49, '#d26a28') // Golden horizon glow (right at eye-level horizon!)
+	grad.addColorStop(0.51, '#f09838') // Warmest horizon band
+	grad.addColorStop(0.53, '#241624') // Mountain silhouette horizon
+	grad.addColorStop(0.65, '#140e18') // Mid-mountain depth
+	grad.addColorStop(1.00, '#060810') // Lower ground
 	ctx.fillStyle = grad
 	ctx.fillRect(0, 0, 2048, 1024)
 
-	// 2. SUBTLE DIRECTIONAL SUNSET STRATUS (Delicate horizontal atmospheric bands, NOT blobs)
-	const drawAtmosphericStrata = (y, h, colorStart, colorMid, alpha) => {
+	// 2. SUBTLE DIRECTIONAL SUNSET STRATUS
+	const drawAtmosphericStrata = (y, h, colorStart, colorMid) => {
 		const strGrad = ctx.createLinearGradient(0, y, 2048, y)
 		strGrad.addColorStop(0.00, 'rgba(0,0,0,0)')
 		strGrad.addColorStop(0.15, colorStart)
@@ -46,32 +49,32 @@ function createGlobalSkyTexture() {
 		ctx.fillRect(0, y, 2048, h)
 	}
 
-	drawAtmosphericStrata(580, 24, 'rgba(160, 60, 40, 0.12)', 'rgba(215, 110, 50, 0.18)', 0.15)
-	drawAtmosphericStrata(615, 18, 'rgba(180, 80, 45, 0.14)', 'rgba(235, 135, 65, 0.22)', 0.18)
-	drawAtmosphericStrata(645, 14, 'rgba(200, 100, 50, 0.16)', 'rgba(245, 155, 75, 0.25)', 0.20)
+	drawAtmosphericStrata(455, 18, 'rgba(160, 60, 40, 0.15)', 'rgba(215, 110, 50, 0.22)')
+	drawAtmosphericStrata(480, 14, 'rgba(180, 80, 45, 0.18)', 'rgba(235, 135, 65, 0.25)')
+	drawAtmosphericStrata(500, 12, 'rgba(200, 100, 50, 0.20)', 'rgba(245, 155, 75, 0.28)')
 
-	// 3. CONTINUOUS DISTANT MOUNTAIN HORIZON (Natural organic silhouette)
+	// 3. CONTINUOUS DISTANT MOUNTAIN HORIZON (Natural organic silhouette right at eye level)
 	ctx.save()
 	ctx.beginPath()
 	ctx.moveTo(0, 1024)
-	ctx.lineTo(0, 750)
-	// Organic mountain profile across panorama
+	ctx.lineTo(0, 530)
 	for (let x = 0; x <= 2048; x += 16) {
 		const nx = x * 0.003
-		const my = 740 + Math.sin(nx * 3) * 22 + Math.sin(nx * 7.5) * 12 + Math.cos(nx * 15) * 6
+		const my = 518 + Math.sin(nx * 3) * 22 + Math.sin(nx * 7.5) * 12 + Math.cos(nx * 15) * 6
 		ctx.lineTo(x, my)
 	}
 	ctx.lineTo(2048, 1024)
 	ctx.closePath()
-	const mtnGrad = ctx.createLinearGradient(0, 700, 0, 1024)
-	mtnGrad.addColorStop(0.00, '#261828')
-	mtnGrad.addColorStop(0.40, '#18121c')
-	mtnGrad.addColorStop(1.00, '#080a10')
+	const mtnGrad = ctx.createLinearGradient(0, 500, 0, 1024)
+	mtnGrad.addColorStop(0.00, '#28182a')
+	mtnGrad.addColorStop(0.30, '#1a101c')
+	mtnGrad.addColorStop(1.00, '#060810')
 	ctx.fillStyle = mtnGrad
 	ctx.fill()
+
 	// Soft golden rim along distant ridge
 	ctx.lineWidth = 1.5
-	ctx.strokeStyle = 'rgba(240, 160, 70, 0.35)'
+	ctx.strokeStyle = 'rgba(245, 165, 75, 0.40)'
 	ctx.stroke()
 	ctx.restore()
 
@@ -276,17 +279,17 @@ function ContinuousWorldVista({ archRadius = 5.2, archZ = 9.5 }) {
 	const globalSky = useMemo(() => createGlobalSkyTexture(), [])
 	const portalVista = useMemo(() => createPortalVistaTexture(), [])
 
-	// Portal aperture plane dimensions
-	const planeW = archRadius * 2.4
-	const planeH = archRadius * 2.4
-	const planeZ = archZ + 1.8
-	const planeCY = archRadius * 1.025
+	// Portal aperture plane dimensions (placed behind the spatial tunnel exit)
+	const planeW = archRadius * 2.35
+	const planeH = archRadius * 2.35
+	const planeZ = archZ + 2.6
+	const planeCY = archRadius * 1.05
 
 	return (
 		<group position={[0, 0, 0]} userData={{ cameraIgnore: true }}>
-			{/* 1. SEAMLESS CELESTIAL SKY SPHERE (200 units radius) */}
+			{/* 1. SEAMLESS CELESTIAL SKY SPHERE (130 units radius) */}
 			<mesh position={[0, 3.0, 0]}>
-				<sphereGeometry args={[200, 40, 30]} />
+				<sphereGeometry args={[130, 48, 32]} />
 				<meshBasicMaterial map={globalSky} side={THREE.BackSide} toneMapped={false} fog={false} />
 			</mesh>
 

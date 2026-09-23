@@ -15,7 +15,7 @@ export const destinationTargets = destinations.filter((destination) => destinati
 function World({ isMobile, enabled, isLocked, mobileInput, mobileLook, mobilePinchDistance, navigationTarget, onNavigationState, playerPositionRef, onPositionChange, onRotationChange, onZoomChange, onCameraModeChange, onNearby, onInteract, selectedStateId, dragLookRef, explorationEnabled }) {
 	return <group>
 		<Pathway />
-		<SparkInstallation onSelect={onInteract} />
+		<SparkInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} />
 		<BuildInstallation onSelect={onInteract} />
 		<QuintesysCampus selectedStateId={selectedStateId} onSelect={onInteract} />
 		<ToolkitInstallation onSelect={onInteract} />

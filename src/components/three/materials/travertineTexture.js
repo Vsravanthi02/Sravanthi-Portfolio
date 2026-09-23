@@ -22,10 +22,10 @@ export function getTravertineMaterials() {
 
 	// Warm natural limestone base gradient
 	const baseGrad = actx.createLinearGradient(0, 0, 0, height)
-	baseGrad.addColorStop(0.00, '#ded5c4')
-	baseGrad.addColorStop(0.35, '#d6cca9')
-	baseGrad.addColorStop(0.70, '#cec2ae')
-	baseGrad.addColorStop(1.00, '#c2b49e')
+	baseGrad.addColorStop(0.00, '#d2ccc1') // Neutral warm limestone
+	baseGrad.addColorStop(0.35, '#c7c1b6')
+	baseGrad.addColorStop(0.70, '#beb8ad')
+	baseGrad.addColorStop(1.00, '#b8b2a7')
 	actx.fillStyle = baseGrad
 	actx.fillRect(0, 0, width, height)
 

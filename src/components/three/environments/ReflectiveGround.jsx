@@ -1,32 +1,97 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
+import { useFrame } from '@react-three/fiber'
 import { MeshReflectorMaterial } from '@react-three/drei'
 import { getTravertineMaterials } from '../materials/travertineTexture'
 
-// Cinematic architectural plaza with monumental stepped stone terraces.
-// Realistic wet-stone courtyard reflections with subtle sheen (NO harsh streaks),
-// integrated reflection pools, and restrained under-step warm LED illumination.
+// ============================================================================
+// CINEMATIC FUTURISTIC AI SANCTUARY — PLAZA, SUNKEN BASINS & TERRACES
+// - Large-format honed stone pavers with dark joints (NO graphic overlay lines)
+// - Sunken architectural reflection basins with real-time subtle water shimmer
+// - Floating cantilevered stone benches with concealed warm under-wash
+// - Monumental terraced steps leading to the spatial portal bridge
+// ============================================================================
+
+function SunkenWaterBasin({ position, size = [3.2, 5.8], warmLight }) {
+	const waterRef = useRef()
+	const [w, d] = size
+
+	useFrame((state) => {
+		if (waterRef.current) {
+			const t = state.clock.elapsedTime
+			waterRef.current.position.y = 0.024 + Math.sin(t * 1.6 + position[0]) * 0.002
+		}
+	})
+
+	return (
+		<group position={position}>
+			{/* Water surface with realistic reflection */}
+			<mesh ref={waterRef} position={[0, 0.024, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+				<planeGeometry args={[w, d]} />
+				<MeshReflectorMaterial
+					resolution={512}
+					mirror={0.46}
+					mixBlur={2.4}
+					mixStrength={0.55}
+					blur={[100, 60]}
+					depthScale={0.06}
+					minDepthThreshold={0.85}
+					color="#040914"
+					metalness={0.28}
+					roughness={0.12}
+				/>
+			</mesh>
+
+			{/* Sunken stone basin coping */}
+			<mesh position={[0, 0.05, -d / 2 - 0.16]}>
+				<boxGeometry args={[w + 0.64, 0.08, 0.32]} />
+				<meshStandardMaterial color="#c2bcb0" roughness={0.74} metalness={0.02} />
+			</mesh>
+			<mesh position={[0, 0.05, d / 2 + 0.16]}>
+				<boxGeometry args={[w + 0.64, 0.08, 0.32]} />
+				<meshStandardMaterial color="#c2bcb0" roughness={0.74} metalness={0.02} />
+			</mesh>
+			<mesh position={[-w / 2 - 0.16, 0.05, 0]}>
+				<boxGeometry args={[0.32, 0.08, d + 0.64]} />
+				<meshStandardMaterial color="#c2bcb0" roughness={0.74} metalness={0.02} />
+			</mesh>
+			<mesh position={[w / 2 + 0.16, 0.05, 0]}>
+				<boxGeometry args={[0.32, 0.08, d + 0.64]} />
+				<meshStandardMaterial color="#c2bcb0" roughness={0.74} metalness={0.02} />
+			</mesh>
+
+			{/* Concealed under-coping warm LED cove */}
+			<mesh position={[0, 0.03, -d / 2]}>
+				<boxGeometry args={[w, 0.015, 0.02]} />
+				<meshBasicMaterial color={warmLight} toneMapped={false} />
+			</mesh>
+			<mesh position={[0, 0.03, d / 2]}>
+				<boxGeometry args={[w, 0.015, 0.02]} />
+				<meshBasicMaterial color={warmLight} toneMapped={false} />
+			</mesh>
+		</group>
+	)
+}
+
 function ReflectiveGround({
 	position = [0, 0, 0],
-	width = 40,
-	depth = 46,
-	color = '#10141a',
-	resolution = 1024,
-	stoneColor = '#c8c0b2',
-	metalColor = '#10141c',
-	warmLight = '#ffa032',
+	width = 42,
+	depth = 48,
+	stoneColor = '#c2bcb0',
+	metalColor = '#0d121a',
+	warmLight = '#ffb45c',
 	archZ = 9.5
 }) {
 	const travertine = useMemo(() => getTravertineMaterials(), [])
 
-	// 6 monumental wide stone terrace steps leading up to the gateway
+	// Monumental stone terrace steps leading up to the portal bridge
 	const steps = [
-		{ z: archZ - 5.0, y: 0.14, h: 0.14, d: 1.30, w: 20.0 },
-		{ z: archZ - 3.8, y: 0.28, h: 0.28, d: 1.25, w: 19.2 },
-		{ z: archZ - 2.6, y: 0.42, h: 0.42, d: 1.20, w: 18.4 },
-		{ z: archZ - 1.5, y: 0.56, h: 0.56, d: 1.20, w: 17.6 },
-		{ z: archZ - 0.5, y: 0.68, h: 0.68, d: 1.30, w: 17.0 },
-		{ z: archZ + 0.6, y: 0.78, h: 0.78, d: 1.40, w: 16.2 },
+		{ z: archZ - 5.0, y: 0.14, h: 0.14, d: 1.30, w: 20.4 },
+		{ z: archZ - 3.8, y: 0.28, h: 0.28, d: 1.25, w: 19.6 },
+		{ z: archZ - 2.6, y: 0.42, h: 0.42, d: 1.20, w: 18.8 },
+		{ z: archZ - 1.5, y: 0.56, h: 0.56, d: 1.20, w: 18.0 },
+		{ z: archZ - 0.5, y: 0.68, h: 0.68, d: 1.30, w: 17.2 },
+		{ z: archZ + 0.6, y: 0.78, h: 0.78, d: 1.40, w: 16.4 },
 	]
 
 	const stoneMat = {
@@ -34,8 +99,14 @@ function ReflectiveGround({
 		map: travertine.albedo,
 		bumpMap: travertine.bump,
 		bumpScale: 0.024,
-		roughness: 0.76,
+		roughness: 0.74,
 		metalness: 0.02,
+	}
+
+	const darkMat = {
+		color: metalColor,
+		roughness: 0.88,
+		metalness: 0.22,
 	}
 
 	return (
@@ -45,91 +116,59 @@ function ReflectiveGround({
 			<mesh position={[0, 0, -2]} rotation={[-Math.PI / 2, 0, 0]}>
 				<planeGeometry args={[width, depth]} />
 				<MeshReflectorMaterial
-					resolution={resolution}
-					mirror={0.05}
-					mixBlur={3.8}
-					mixStrength={0.18}
+					resolution={1024}
+					mirror={0.06}
+					mixBlur={3.6}
+					mixStrength={0.20}
 					blur={[80, 40]}
 					depthScale={0.04}
 					minDepthThreshold={0.80}
 					color="#101520"
 					map={travertine.plaza}
 					metalness={0.05}
-					roughness={0.52}
+					roughness={0.50}
 				/>
 			</mesh>
 
-			{/* ── 2. DUAL ARCHITECTURAL REFLECTION POOLS ── */}
-			{[-5.6, 5.6].map((x) => (
-				<group key={`pool-${x}`} position={[x, 0, 1.8]}>
-					{/* Dark calm water surface */}
-					<mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-						<planeGeometry args={[2.8, 4.8]} />
-						<MeshReflectorMaterial
-							resolution={512}
-							mirror={0.45}
-							mixBlur={2.5}
-							mixStrength={0.55}
-							blur={[120, 70]}
-							depthScale={0.08}
-							minDepthThreshold={0.88}
-							color="#040810"
-							metalness={0.25}
-							roughness={0.12}
-						/>
-					</mesh>
+			{/* ── 2. DUAL SUNKEN ARCHITECTURAL REFLECTION BASINS ── */}
+			<SunkenWaterBasin position={[-5.8, 0, 1.6]} size={[3.2, 5.8]} warmLight={warmLight} />
+			<SunkenWaterBasin position={[ 5.8, 0, 1.6]} size={[3.2, 5.8]} warmLight={warmLight} />
 
-					{/* Travertine stone coping border */}
-					{[[0, 0.06, -2.56, 3.0, 0.10, 0.30], [0, 0.06, 2.56, 3.0, 0.10, 0.30], [-1.58, 0.06, 0, 0.30, 0.10, 5.16], [1.58, 0.06, 0, 0.30, 0.10, 5.16]].map(([px, py, pz, sx, sy, sz], i) => (
-						<mesh key={`coping-${i}`} position={[px, py, pz]}>
-							<boxGeometry args={[sx, sy, sz]} />
-							<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
-						</mesh>
-					))}
-
-					{/* Under-coping subtle warm LED light reveal */}
-					{[[0, 0.035, -2.40, 2.6, 0.02, 0.03], [0, 0.035, 2.40, 2.6, 0.02, 0.03], [-1.42, 0.035, 0, 0.03, 0.02, 4.7], [1.42, 0.035, 0, 0.03, 0.02, 4.7]].map(([px, py, pz, sx, sy, sz], i) => (
-						<mesh key={`pool-light-${i}`} position={[px, py, pz]}>
-							<boxGeometry args={[sx, sy, sz]} />
-							<meshBasicMaterial color={warmLight} toneMapped={false} />
-						</mesh>
-					))}
-				</group>
-			))}
-
-			{/* ── 3. SYMMETRICAL STONE BENCHES ── */}
-			{[-8.5, 8.5].map((x) => (
+			{/* ── 3. FLOATING CANTILEVERED ARCHITECTURAL BENCHES ── */}
+			{[-9.0, 9.0].map((x) => (
 				<group key={`bench-${x}`} position={[x, 0, 0.2]}>
-					<mesh position={[-0.9, 0.17, 0]}>
-						<boxGeometry args={[0.28, 0.34, 0.72]} />
-						<meshStandardMaterial color={metalColor} roughness={0.82} metalness={0.20} />
+					{/* Obsidian recessed supports */}
+					<mesh position={[-1.0, 0.16, 0]}>
+						<boxGeometry args={[0.26, 0.32, 0.72]} />
+						<meshStandardMaterial {...darkMat} />
 					</mesh>
-					<mesh position={[0.9, 0.17, 0]}>
-						<boxGeometry args={[0.28, 0.34, 0.72]} />
-						<meshStandardMaterial color={metalColor} roughness={0.82} metalness={0.20} />
+					<mesh position={[1.0, 0.16, 0]}>
+						<boxGeometry args={[0.26, 0.32, 0.72]} />
+						<meshStandardMaterial {...darkMat} />
 					</mesh>
-					<mesh position={[0, 0.38, 0]}>
-						<boxGeometry args={[2.4, 0.13, 0.88]} />
+					{/* Floating cantilevered stone seat */}
+					<mesh position={[0, 0.36, 0]}>
+						<boxGeometry args={[2.7, 0.14, 0.90]} />
 						<meshStandardMaterial {...stoneMat} bumpScale={0.022} />
 					</mesh>
 					{/* Under-bench soft warm wash */}
-					<mesh position={[0, 0.28, 0]}>
-						<boxGeometry args={[1.8, 0.02, 0.46]} />
-						<meshBasicMaterial color={warmLight} transparent opacity={0.35} toneMapped={false} />
+					<mesh position={[0, 0.26, 0]}>
+						<boxGeometry args={[2.0, 0.02, 0.48]} />
+						<meshBasicMaterial color={warmLight} transparent opacity={0.42} toneMapped={false} />
 					</mesh>
 				</group>
 			))}
 
-			{/* ── 4. MONUMENTAL STAIRCASE WITH RESTRAINED UNDER-STEP LEDS ── */}
+			{/* ── 4. MONUMENTAL STAIRCASE WITH UNDER-STEP WARM GLOW ── */}
 			<group>
 				{steps.map(({ z, y, h, d, w }, index) => (
 					<group key={`step-${index}`}>
-						{/* Travertine stone tread slab */}
+						{/* Stone tread slab */}
 						<mesh position={[0, y / 2, z]} receiveShadow={false}>
 							<boxGeometry args={[w, h, d]} />
 							<meshStandardMaterial {...stoneMat} bumpScale={0.022} />
 						</mesh>
-						{/* Subtle warm LED reveal tucked right under tread nosing */}
+						{/* Concealed warm LED reveal tucked right under tread nosing */}
 						<mesh position={[0, y - 0.015, z - d / 2 + 0.025]}>
 							<boxGeometry args={[w - 0.4, 0.018, 0.025]} />
 							<meshBasicMaterial color={warmLight} toneMapped={false} />
@@ -138,48 +177,69 @@ function ReflectiveGround({
 				))}
 			</group>
 
-			{/* ── 5. FLANKING TERRACE RETAINING WALLS & PLANTERS ── */}
-			{[-1, 1].map((side) => {
-				const xBase = side * 10.5
-				return (
-					<group key={`terrace-wall-${side}`} position={[xBase, 0, archZ - 2.5]}>
-						{/* Main retaining wall */}
-						<mesh position={[0, 0.55, 0]}>
-							<boxGeometry args={[4.0, 1.10, 6.0]} />
-							<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
-						</mesh>
-						{/* Charcoal base */}
-						<mesh position={[0, 0.07, 0]}>
-							<boxGeometry args={[4.15, 0.14, 6.15]} />
-							<meshStandardMaterial color={metalColor} roughness={0.85} metalness={0.20} />
-						</mesh>
-						{/* Top coping */}
-						<mesh position={[0, 1.14, 0]}>
-							<boxGeometry args={[4.16, 0.12, 6.16]} />
-							<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
-						</mesh>
-						{/* Under-coping warm LED cove */}
-						<mesh position={[-side * 2.06, 1.06, 0]}>
-							<boxGeometry args={[0.035, 0.02, 5.9]} />
-							<meshBasicMaterial color={warmLight} toneMapped={false} />
-						</mesh>
-						{/* Planter soil */}
-						<mesh position={[0, 1.17, 0]}>
-							<boxGeometry args={[3.4, 0.05, 5.5]} />
-							<meshStandardMaterial color="#120e0a" roughness={0.96} />
-						</mesh>
-						{/* Manicured shrubs */}
-						{[-2.0, -1.0, 0, 1.0, 2.0].map((pz, idx) => (
-							<mesh key={`shrub-${idx}`} position={[0, 1.38, pz]} scale={[0.60, 0.38, 0.60]}>
-								<dodecahedronGeometry args={[0.60, 1]} />
-								<meshStandardMaterial color={idx % 2 === 0 ? '#1e2c16' : '#26381c'} roughness={0.88} flatShading />
-							</mesh>
-						))}
-					</group>
-				)
-			})}
+			{/* ── 5. ASYMMETRICAL TERRACE FLANKS & MANICURED PLANTING ── */}
+			{/* Left retaining terrace (wider, heavy mass) */}
+			<group position={[-11.2, 0, archZ - 2.5]}>
+				<mesh position={[0, 0.55, 0]}>
+					<boxGeometry args={[4.8, 1.10, 6.2]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
+				</mesh>
+				<mesh position={[0, 0.07, 0]}>
+					<boxGeometry args={[4.95, 0.14, 6.35]} />
+					<meshStandardMaterial {...darkMat} />
+				</mesh>
+				<mesh position={[0, 1.14, 0]}>
+					<boxGeometry args={[4.96, 0.12, 6.36]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
+				</mesh>
+				<mesh position={[2.42, 1.06, 0]}>
+					<boxGeometry args={[0.035, 0.02, 6.1]} />
+					<meshBasicMaterial color={warmLight} toneMapped={false} />
+				</mesh>
+				<mesh position={[0, 1.17, 0]}>
+					<boxGeometry args={[4.2, 0.05, 5.6]} />
+					<meshStandardMaterial color="#120e0a" roughness={0.96} />
+				</mesh>
+				{/* Dark architectural cypress shrubs */}
+				{[-2.2, -1.1, 0, 1.1, 2.2].map((pz, idx) => (
+					<mesh key={`shrub-l-${idx}`} position={[0, 1.40, pz]} scale={[0.58, 0.42, 0.58]}>
+						<dodecahedronGeometry args={[0.60, 1]} />
+						<meshStandardMaterial color={idx % 2 === 0 ? '#1b2a14' : '#223418'} roughness={0.88} flatShading />
+					</mesh>
+				))}
+			</group>
 
-			{/* ── 6. LOW PERIMETER PLAZA CURBS ── */}
+			{/* Right retaining terrace (stepped back, narrower) */}
+			<group position={[11.5, 0, archZ - 2.5]}>
+				<mesh position={[0, 0.55, 0]}>
+					<boxGeometry args={[4.2, 1.10, 6.2]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
+				</mesh>
+				<mesh position={[0, 0.07, 0]}>
+					<boxGeometry args={[4.35, 0.14, 6.35]} />
+					<meshStandardMaterial {...darkMat} />
+				</mesh>
+				<mesh position={[0, 1.14, 0]}>
+					<boxGeometry args={[4.36, 0.12, 6.36]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
+				</mesh>
+				<mesh position={[-2.12, 1.06, 0]}>
+					<boxGeometry args={[0.035, 0.02, 6.1]} />
+					<meshBasicMaterial color={warmLight} toneMapped={false} />
+				</mesh>
+				<mesh position={[0, 1.17, 0]}>
+					<boxGeometry args={[3.6, 0.05, 5.6]} />
+					<meshStandardMaterial color="#120e0a" roughness={0.96} />
+				</mesh>
+				{[-1.8, -0.6, 0.6, 1.8].map((pz, idx) => (
+					<mesh key={`shrub-r-${idx}`} position={[0, 1.40, pz]} scale={[0.62, 0.40, 0.62]}>
+						<dodecahedronGeometry args={[0.60, 1]} />
+						<meshStandardMaterial color={idx % 2 === 0 ? '#1f2e18' : '#24361c'} roughness={0.88} flatShading />
+					</mesh>
+				))}
+			</group>
+
+			{/* ── 6. PERIMETER CURBS ── */}
 			{[
 				[[0, 0.04, -depth / 2 - 2], [width, 0.08, 0.3]],
 				[[-width / 2, 0.04, -2], [0.3, 0.08, depth]],
