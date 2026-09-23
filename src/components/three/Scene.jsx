@@ -70,8 +70,8 @@ function Scene({ enabled = true, mobileInput = [0, 0], mobileLook = [0, 0], mobi
 	// farther out than any other chapter's content, so its far plane is wider —
 	// every other stage keeps the original (10, 26) untouched.
 	// Spark's monumental architecture sits farther out so its far plane is wider.
-	const fogFar = activeDestination === 'home' ? 56 : 26
-	const fogNear = activeDestination === 'home' ? 16 : 10
+	const fogFar = activeDestination === 'home' ? 140 : 26
+	const fogNear = activeDestination === 'home' ? 28 : 10
 	const fogColor = activeDestination === 'home' ? '#1c2842' : '#0a0e16'
 
 	return (

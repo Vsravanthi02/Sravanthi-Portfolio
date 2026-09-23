@@ -1,42 +1,84 @@
-// A large angled structural wall panel — used in pairs, further out than the
-// arch's own flanking columns, to bookend the whole composition. Vertical
-// recess lines and a base plinth are what separate "architecture" from "one
-// flat dark slab" — large simple forms with a little structural rhythm, not
-// dense detail.
-function WingWall({ position = [0, 0, 0], rotationY = 0, width = 5, height = 9, depth = 0.7, color = '#101c30', edgeColor = '#ffb45e' }) {
-	const divisions = 3
+import { useMemo } from 'react'
+import * as THREE from 'three'
+import { getTravertineMaterials } from '../materials/travertineTexture'
+
+// Monumental flanking pylon seamlessly matching ArchFrame:
+// - Heavy monolithic Roman travertine limestone massing (#c8c0b2)
+// - Deep structural charcoal reveal channel with warm LED illumination facing the camera (-Z)
+// - Clean contemporary coping and continuous charcoal base plinth
+function WingWall({
+	position = [0, 0, 0],
+	rotationY = 0,
+	width = 3.4,
+	height = 10.4,
+	depth = 2.2,
+	color = '#bcb4a6',          // authentic natural travertine limestone
+	metalColor = '#10141c',     // deep structural charcoal
+	edgeColor = '#ffa032'       // restrained warm amber-gold architectural LED
+}) {
+	const travertine = useMemo(() => getTravertineMaterials(), [])
+
+	const stoneMat = {
+		color,
+		map: travertine.albedo,
+		bumpMap: travertine.bump,
+		bumpScale: 0.024,
+		roughness: 0.76,
+		metalness: 0.02,
+	}
+
+	const frontZ = -depth / 2
+
 	return (
 		<group position={position} rotation={[0, rotationY, 0]}>
-			{/* Base plinth */}
-			<mesh position={[0, 0.25, depth * 0.1]}>
-				<boxGeometry args={[width * 1.08, 0.5, depth * 1.3]} />
-				<meshStandardMaterial color="#0a1526" roughness={0.85} />
+
+			{/* ── 1. CONTINUOUS STRUCTURAL BASE PLINTH ── */}
+			{/* Heavy charcoal plinth */}
+			<mesh position={[0, 0.24, 0]}>
+				<boxGeometry args={[width * 1.10, 0.48, depth * 1.16]} />
+				<meshStandardMaterial color={metalColor} roughness={0.88} metalness={0.15} />
 			</mesh>
-			<mesh position={[0, height / 2 + 0.5, 0]}>
+			{/* Travertine plinth moulding */}
+			<mesh position={[0, 0.54, 0]}>
+				<boxGeometry args={[width * 1.04, 0.16, depth * 1.06]} />
+				<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
+			</mesh>
+
+			{/* ── 2. MONUMENTAL STONE PYLON BODY ── */}
+			<mesh position={[0, height / 2 + 0.54, 0]} receiveShadow castShadow>
 				<boxGeometry args={[width, height, depth]} />
-				<meshStandardMaterial color={color} roughness={0.78} metalness={0.22} />
+				<meshStandardMaterial {...stoneMat} bumpScale={0.028} />
 			</mesh>
-			{/* Vertical recess lines — subtle structural rhythm, not decoration */}
-			{Array.from({ length: divisions - 1 }, (_, i) => {
-				const x = -width / 2 + ((i + 1) * width) / divisions
-				return (
-					<mesh key={i} position={[x, height / 2 + 0.5, depth / 2 - 0.02]}>
-						<boxGeometry args={[0.08, height * 0.88, 0.05]} />
-						<meshStandardMaterial color="#081120" roughness={0.9} />
-					</mesh>
-				)
-			})}
-			{/* Inner warm-lit edge, catching the sunset key light */}
-			<mesh position={[width / 2 - 0.03, height / 2 + 0.5, depth / 2 + 0.01]}>
-				<boxGeometry args={[0.04, height * 0.92, 0.04]} />
-				<meshStandardMaterial color={edgeColor} emissive={edgeColor} emissiveIntensity={0.65} />
+
+			{/* ── 3. DEEP STRUCTURAL CHARCOAL CHANNEL & WARM LED COVE ── */}
+			<mesh position={[0, height / 2 + 0.54, frontZ - 0.05]}>
+				<boxGeometry args={[0.36, height * 0.88, 0.10]} />
+				<meshStandardMaterial color={metalColor} roughness={0.85} metalness={0.18} />
 			</mesh>
-			{/* Small illuminated opening near the base — a real architectural
-			    detail (a window/niche), not a glowing decal. */}
-			<mesh position={[0, 1.4, depth / 2 + 0.01]}>
-				<planeGeometry args={[width * 0.32, 0.9]} />
-				<meshStandardMaterial color="#2a2016" emissive={edgeColor} emissiveIntensity={0.3} roughness={0.6} />
+			{/* Luminous warm-amber vertical LED strip */}
+			<mesh position={[0, height / 2 + 0.54, frontZ - 0.09]}>
+				<boxGeometry args={[0.07, height * 0.84, 0.02]} />
+				<meshBasicMaterial color={edgeColor} toneMapped={false} />
 			</mesh>
+
+			{/* Inner vertical warm LED cove facing toward central gateway */}
+			<mesh position={[-(Math.sign(position[0]) || 1) * (width / 2 - 0.16), height / 2 + 0.54, frontZ - 0.06]}>
+				<boxGeometry args={[0.07, height * 0.88, 0.02]} />
+				<meshBasicMaterial color={edgeColor} toneMapped={false} />
+			</mesh>
+
+			{/* ── 4. MONOLITHIC CONTEMPORARY TOP COPING ── */}
+			{/* Dark shadow reveal line */}
+			<mesh position={[0, height + 0.60, 0]}>
+				<boxGeometry args={[width * 1.04, 0.06, depth * 1.08]} />
+				<meshStandardMaterial color={metalColor} roughness={0.88} metalness={0.15} />
+			</mesh>
+			{/* Projecting monolithic travertine coping cap */}
+			<mesh position={[0, height + 0.74, 0]}>
+				<boxGeometry args={[width * 1.12, 0.26, depth * 1.16]} />
+				<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
+			</mesh>
+
 		</group>
 	)
 }

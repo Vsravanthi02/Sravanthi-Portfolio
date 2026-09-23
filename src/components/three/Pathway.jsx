@@ -82,6 +82,7 @@ function buildFloorGeometry(samples) {
 		normals.push(0, 1, 0, 0, 1, 0)
 	})
 	for (let i = 0; i < samples.length - 1; i++) {
+		if (samples[i].point.z < 13.5 || samples[i + 1].point.z < 13.5) continue
 		const a = i * 2, b = i * 2 + 1, c = (i + 1) * 2, d = (i + 1) * 2 + 1
 		indices.push(a, c, b, b, c, d)
 	}
@@ -101,7 +102,7 @@ function buildWallGeometry(samples, sign) {
 	let vertexCount = 0
 	const segments = []
 	samples.forEach(({ point, perp, width, wallHeight }) => {
-		if (wallHeight < 0.05) { segments.push(null); return }
+		if (point.z < 13.5 || wallHeight < 0.05) { segments.push(null); return }
 		const half = width / 2
 		const bx = point.x + perp.x * half * sign
 		const bz = point.z + perp.z * half * sign
@@ -159,7 +160,8 @@ function Pathway() {
 	const edgeGeometry = useMemo(() => {
 		const positions = []
 		samples.forEach(({ point, perp, width }) => {
-			const half = point.length() < SPARK_CLEARANCE ? 0 : width / 2
+			if (point.z < 13.5) return
+			const half = width / 2
 			positions.push(point.x + perp.x * half, point.y + 0.01, point.z + perp.z * half)
 		})
 		const geometry = new THREE.BufferGeometry()

@@ -76,8 +76,17 @@ function PendingMarker({ item, position, onSelect }) {
 
 function BuildInstallation({ onSelect }) {
 	const base = destinationById.projects.position
+	const groupRef = useRef()
+
+	useFrame(({ camera }) => {
+		if (groupRef.current) {
+			// Only show when the player moves past the gateway towards the Build stage
+			groupRef.current.visible = camera.position.z > 8.0
+		}
+	})
+
 	return (
-		<group position={base}>
+		<group ref={groupRef} position={base}>
 			<mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}><planeGeometry args={[6.4, 3.4]} /><meshStandardMaterial color="#141c2c" metalness={0.3} roughness={0.85} /></mesh>
 			<group onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onSelect(destinationById.projects) }} onDoubleClick={(event) => event.stopPropagation()} onPointerOver={() => { document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = '' }}>
 				{NODES.map(({ label, position }) => {
