@@ -7,6 +7,11 @@ import useIsMobile from '../../hooks/useIsMobile'
 import WorldHUD from '../../components/ui/WorldHUD'
 import ProjectTerminal from '../../components/ui/ProjectTerminal'
 import QuintesysTerminal from '../../components/ui/QuintesysTerminal'
+import SparkConceptTerminal from '../../components/ui/SparkConceptTerminal'
+import BuildProjectTerminal from '../../components/ui/BuildProjectTerminal'
+import SolveChamberTerminal from '../../components/ui/SolveChamberTerminal'
+import EngineerStationTerminal from '../../components/ui/EngineerStationTerminal'
+import ToolkitStationTerminal from '../../components/ui/ToolkitStationTerminal'
 import { destinationById, destinations } from '../../data/destinations'
 import { isQuintesysTarget } from '../../data/geography'
 
@@ -95,7 +100,7 @@ function Hero() {
 	}, [])
 	useEffect(() => {
 		const handleEscape = (event) => {
-			if (event.key === 'Escape' && (activeTarget?.id === 'projects' || isQuintesysTarget(activeTarget))) setActiveTarget(null)
+			if (event.key === 'Escape' && (activeTarget?.id === 'projects' || isQuintesysTarget(activeTarget) || activeTarget?.type === 'spark-question' || activeTarget?.type === 'build-project' || activeTarget?.type === 'solve-chamber' || activeTarget?.type === 'engineer-station')) setActiveTarget(null)
 		}
 		document.addEventListener('keydown', handleEscape)
 		return () => document.removeEventListener('keydown', handleEscape)
@@ -128,7 +133,7 @@ function Hero() {
 	const titlingHidden = isLocked || isExploring || activeDestination !== 'home'
 	return (
 		<section className="hero" id="home">
-			<HeroScene enabled={worldEnabled} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onLockChange={setIsLocked} onNavigationState={handleNavigationState} onNearby={setNearby} onInteract={handleInteraction} onPositionChange={handlePositionChange} onCameraModeChange={setCameraMode} selectedStateId={activeTarget?.type === 'state' ? activeTarget.id : null} activeDestination={activeDestination} onExplorationChange={setIsExploring} />
+			<HeroScene enabled={worldEnabled} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onLockChange={setIsLocked} onNavigationState={handleNavigationState} onNearby={setNearby} onInteract={handleInteraction} onPositionChange={handlePositionChange} onCameraModeChange={setCameraMode} selectedStateId={activeTarget?.type === 'state' ? activeTarget.id : null} activeDestination={activeDestination} onExplorationChange={setIsExploring} onNavigate={handleNavigationClick} />
 			<div className="hero-overlay">
 				<motion.div className={titlingHidden ? 'hero-actions-bar is-hidden' : 'hero-actions-bar'} initial={{ opacity: 0 }} animate={titlingHidden ? { opacity: 0 } : { opacity: 1 }} transition={{ duration: 0.7, delay: 0.15 }} style={{ pointerEvents: titlingHidden ? 'none' : 'auto' }}>
 					<div className="hero-actions">
@@ -141,6 +146,40 @@ function Hero() {
 			{worldEnabled && <WorldHUD isLocked={isLocked} isExploring={isExploring} isMobile={isMobile} cameraMode={cameraMode} nearby={nearby} activeTarget={activeTarget} activeDestination={activeDestination} navigationStatus={navigationStatus} onInteract={handleInteraction} onExit={exitWorld} onTouchMove={setMobileInput} onTouchLook={isMobile ? handleTouchLook : null} />}
 			{activeTarget?.id === 'projects' && <ProjectTerminal onClose={() => setActiveTarget(null)} />}
 			{isQuintesysTarget(activeTarget) && <QuintesysTerminal target={activeTarget} onClose={() => setActiveTarget(null)} onSelectState={handleInteraction} />}
+			{activeTarget?.type === 'spark-question' && (
+				<SparkConceptTerminal
+					question={activeTarget}
+					onClose={() => setActiveTarget(null)}
+					onNavigate={(stageId) => handleNavigationClick(stageId)}
+				/>
+			)}
+			{activeTarget?.type === 'build-project' && (
+				<BuildProjectTerminal
+					project={activeTarget}
+					onClose={() => setActiveTarget(null)}
+					onNavigate={(stageId) => handleNavigationClick(stageId)}
+				/>
+			)}
+			{activeTarget?.type === 'solve-chamber' && (
+				<SolveChamberTerminal
+					chamber={activeTarget}
+					onClose={() => setActiveTarget(null)}
+				/>
+			)}
+			{activeTarget?.type === 'engineer-station' && (
+				<EngineerStationTerminal
+					station={activeTarget}
+					onClose={() => setActiveTarget(null)}
+					onNavigate={(stageId) => handleNavigationClick(stageId)}
+				/>
+			)}
+			{(activeTarget?.type === 'toolkit-station' || activeTarget?.type === 'toolkit-core') && (
+				<ToolkitStationTerminal
+					target={activeTarget}
+					onClose={() => setActiveTarget(null)}
+					onSelectStation={(st) => setActiveTarget(st)}
+				/>
+			)}
 			<div className="hero-index" aria-hidden="true">01 <span>/</span> 06</div>
 			<div className="hero-corner-note" aria-hidden="true">INTELLIGENCE<br />IN MOTION</div>
 		</section>

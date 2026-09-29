@@ -1,7 +1,6 @@
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
-import { MeshReflectorMaterial } from '@react-three/drei'
 import { getTravertineMaterials } from '../materials/travertineTexture'
 
 // ============================================================================
@@ -28,17 +27,10 @@ function SunkenWaterBasin({ position, size = [3.2, 5.8], warmLight }) {
 			{/* Water surface with realistic reflection */}
 			<mesh ref={waterRef} position={[0, 0.024, 0]} rotation={[-Math.PI / 2, 0, 0]}>
 				<planeGeometry args={[w, d]} />
-				<MeshReflectorMaterial
-					resolution={512}
-					mirror={0.46}
-					mixBlur={2.4}
-					mixStrength={0.55}
-					blur={[100, 60]}
-					depthScale={0.06}
-					minDepthThreshold={0.85}
-					color="#040914"
-					metalness={0.28}
-					roughness={0.12}
+				<meshStandardMaterial
+					color="#030812"
+					metalness={0.88}
+					roughness={0.08}
 				/>
 			</mesh>
 
@@ -115,18 +107,11 @@ function ReflectiveGround({
 			{/* ── 1. MAIN WET HONED STONE PLAZA SLAB ── */}
 			<mesh position={[0, 0, -2]} rotation={[-Math.PI / 2, 0, 0]}>
 				<planeGeometry args={[width, depth]} />
-				<MeshReflectorMaterial
-					resolution={1024}
-					mirror={0.06}
-					mixBlur={3.6}
-					mixStrength={0.20}
-					blur={[80, 40]}
-					depthScale={0.04}
-					minDepthThreshold={0.80}
-					color="#101520"
+				<meshStandardMaterial
+					color="#0c1018"
 					map={travertine.plaza}
-					metalness={0.05}
-					roughness={0.50}
+					metalness={0.04}
+					roughness={0.58}
 				/>
 			</mesh>
 

@@ -4,27 +4,28 @@ import { useFrame } from '@react-three/fiber'
 import { getTravertineMaterials } from '../materials/travertineTexture'
 
 // ============================================================================
-// ASYMMETRICAL SANCTUARY WINGS — SCULPTURAL FUTURISTIC ARCHITECTURE
-// - Left Wing: Low-to-mid horizontal cantilevered pavilion stepping down to landscape
-// - Right Wing: Staggered multi-tier architectural masses with floating terraces
-// - Zero vertical column pilasters (pure Mass + Void + Light)
-// - Real Three.js PointLights casting warm amber wash on adjacent stone
+// ASYMMETRICAL SANCTUARY FLANKS — SCULPTURAL LANDSCAPE INTEGRATION
+// - Screen LEFT (+X): Open negative-space contemplation courtyard with sunken pool.
+//   ZERO vertical walls — pure open sky directly beneath the soaring canopy.
+// - Screen RIGHT (-X): Stepped bedrock terraces anchoring the monolithic mass
+//   into the desert mountain terrain.
 // ============================================================================
 
-export function SanctuaryLeftWing({
-	position = [-11.6, 0, 9.2],
+// Screen LEFT (+X): Open Contemplation Courtyard under the Soaring Canopy
+export function SanctuaryLeftScreenWing({
+	position = [12.0, 0, 9.5],
 	stoneColor = '#c2bcb0',
 	metalColor = '#0d121a',
 	edgeColor = '#ffb45c',
 	techColor = '#35d8ff'
 }) {
 	const travertine = useMemo(() => getTravertineMaterials(), [])
-	const lightRef = useRef()
+	const waterRef = useRef()
 
 	useFrame((state) => {
-		if (lightRef.current) {
+		if (waterRef.current) {
 			const t = state.clock.elapsedTime
-			lightRef.current.intensity = 0.45 * (1.0 + Math.sin(t * 1.5 + 2.0) * 0.04)
+			waterRef.current.position.y = 0.50 + Math.sin(t * 1.5) * 0.002
 		}
 	})
 
@@ -45,92 +46,75 @@ export function SanctuaryLeftWing({
 
 	return (
 		<group position={position}>
-			{/* ── 1. TERRACED SUB-PLINTH ── */}
+			{/* Low stepped courtyard terrace (height only 0.44m, zero vertical walls) */}
 			<mesh position={[0, 0.22, 0]}>
-				<boxGeometry args={[5.8, 0.44, 5.4]} />
+				<boxGeometry args={[8.4, 0.44, 7.2]} />
 				<meshStandardMaterial {...darkMat} />
 			</mesh>
-			<mesh position={[0, 0.54, 0]}>
-				<boxGeometry args={[5.4, 0.48, 5.0]} />
+			<mesh position={[0, 0.48, 0]}>
+				<boxGeometry args={[8.0, 0.16, 6.8]} />
 				<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
 			</mesh>
 
-			{/* ── 2. MONUMENTAL LOWER STONE MASS ── */}
-			<mesh position={[0, 2.2, 0]} receiveShadow castShadow>
-				<boxGeometry args={[4.8, 3.4, 4.4]} />
-				<meshStandardMaterial {...stoneMat} bumpScale={0.026} />
-			</mesh>
-
-			{/* ── 3. DRAMATIC FLOATING CANTILEVERED PAVILION SLAB ── */}
-			{/* Projects boldly forward with a deep undercut shadow soffit */}
-			<group position={[0.2, 4.6, -0.6]}>
-				<mesh receiveShadow castShadow>
-					<boxGeometry args={[5.6, 1.4, 4.8]} />
-					<meshStandardMaterial {...stoneMat} bumpScale={0.026} />
+			{/* Sunken contemplation reflection pool */}
+			<group position={[0, 0, 0]}>
+				<mesh ref={waterRef} position={[0, 0.50, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+					<planeGeometry args={[5.6, 4.8]} />
+					<meshStandardMaterial
+						color="#030812"
+						metalness={0.88}
+						roughness={0.08}
+					/>
 				</mesh>
-				{/* Undercut obsidian soffit reveal */}
-				<mesh position={[0, -0.75, 0]}>
-					<boxGeometry args={[5.4, 0.12, 4.6]} />
-					<meshStandardMaterial {...darkMat} />
+				{/* Pool stone coping */}
+				<mesh position={[0, 0.54, -2.55]}>
+					<boxGeometry args={[6.0, 0.08, 0.30]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.020} />
 				</mesh>
-				{/* Concealed amber downlight slot washing the lower stone wall */}
-				<mesh position={[0, -0.72, -1.8]}>
-					<boxGeometry args={[4.6, 0.025, 0.03]} />
-					<meshBasicMaterial color={edgeColor} toneMapped={false} />
+				<mesh position={[0, 0.54, 2.55]}>
+					<boxGeometry args={[6.0, 0.08, 0.30]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.020} />
 				</mesh>
-				{/* REAL THREE.JS AMBER POINTLIGHT casting downward warm light */}
-				<pointLight
-					ref={lightRef}
-					position={[0, -1.0, -1.6]}
-					color="#ffaa48"
-					intensity={0.45}
-					distance={5.5}
-					decay={2}
-				/>
+				<mesh position={[-2.95, 0.54, 0]}>
+					<boxGeometry args={[0.30, 0.08, 5.4]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.020} />
+				</mesh>
+				<mesh position={[2.95, 0.54, 0]}>
+					<boxGeometry args={[0.30, 0.08, 5.4]} />
+					<meshStandardMaterial {...stoneMat} bumpScale={0.020} />
+				</mesh>
 			</group>
 
-			{/* ── 4. UPPER STEPPED SETBACK MASS ── */}
-			<group position={[-0.4, 6.8, 0.2]}>
-				<mesh receiveShadow castShadow>
-					<boxGeometry args={[3.8, 2.8, 3.8]} />
-					<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
-				</mesh>
-				{/* Cantilevered roof coping slab */}
-				<mesh position={[0, 1.55, 0]} castShadow receiveShadow>
-					<boxGeometry args={[4.4, 0.36, 4.4]} />
+			{/* Low sculptural terrace bench (framing negative space without blocking view) */}
+			<group position={[3.2, 0.72, -1.8]}>
+				<mesh castShadow receiveShadow>
+					<boxGeometry args={[0.65, 0.48, 3.2]} />
 					<meshStandardMaterial {...stoneMat} bumpScale={0.022} />
 				</mesh>
-				<mesh position={[0, 1.34, 0]}>
-					<boxGeometry args={[4.0, 0.08, 4.0]} />
+				<mesh position={[0, -0.18, 0]}>
+					<boxGeometry args={[0.72, 0.08, 3.26]} />
 					<meshStandardMaterial {...darkMat} />
 				</mesh>
 			</group>
 
-			{/* Horizontal cyan quantum datum near base */}
-			<mesh position={[0.2, 1.45, -2.25]}>
-				<boxGeometry args={[4.2, 0.025, 0.04]} />
+			{/* Subtle horizontal cyan datum embedded in courtyard curb */}
+			<mesh position={[-0.2, 0.52, -3.35]}>
+				<boxGeometry args={[5.2, 0.022, 0.03]} />
 				<meshBasicMaterial color={techColor} transparent opacity={0.65} toneMapped={false} />
 			</mesh>
 		</group>
 	)
 }
 
-export function SanctuaryRightWing({
-	position = [11.8, 0, 9.2],
+// Screen RIGHT (-X): Stepped Bedrock Terraces extending the Anchor Mass
+export function SanctuaryRightScreenWing({
+	position = [-14.8, 0, 9.5],
 	stoneColor = '#c2bcb0',
 	metalColor = '#0d121a',
 	edgeColor = '#ffb45c',
 	techColor = '#35d8ff'
 }) {
 	const travertine = useMemo(() => getTravertineMaterials(), [])
-	const lightRef = useRef()
-
-	useFrame((state) => {
-		if (lightRef.current) {
-			const t = state.clock.elapsedTime
-			lightRef.current.intensity = 0.42 * (1.0 + Math.sin(t * 1.6 + 0.8) * 0.04)
-		}
-	})
 
 	const stoneMat = {
 		color: stoneColor,
@@ -149,73 +133,35 @@ export function SanctuaryRightWing({
 
 	return (
 		<group position={position}>
-			{/* ── 1. TERRACED SUB-PLINTH ── */}
-			<mesh position={[0, 0.22, 0]}>
-				<boxGeometry args={[5.6, 0.44, 5.0]} />
+			{/* Stepped Bedrock Foundation (extends the right anchor mass out to -18m) */}
+			<mesh position={[0, 0.32, 0]} receiveShadow castShadow>
+				<boxGeometry args={[5.6, 0.64, 8.4]} />
+				<meshStandardMaterial {...stoneMat} bumpScale={0.022} />
+			</mesh>
+			<mesh position={[-0.8, 1.4, -0.4]} receiveShadow castShadow>
+				<boxGeometry args={[4.2, 1.6, 6.8]} />
+				<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
+			</mesh>
+			<mesh position={[-1.2, 2.8, -0.8]} receiveShadow castShadow>
+				<boxGeometry args={[3.2, 1.4, 5.2]} />
+				<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
+			</mesh>
+			{/* Obsidian shadow relief line */}
+			<mesh position={[0, 0.66, 0]}>
+				<boxGeometry args={[5.4, 0.06, 8.2]} />
 				<meshStandardMaterial {...darkMat} />
-			</mesh>
-			<mesh position={[0, 0.54, 0]}>
-				<boxGeometry args={[5.2, 0.48, 4.6]} />
-				<meshStandardMaterial {...stoneMat} bumpScale={0.018} />
-			</mesh>
-
-			{/* ── 2. MONUMENTAL STRUCTURAL MASS WITH CANTILEVERED OBSERVATION DECK ── */}
-			<group position={[-0.6, 4.6, 0.1]}>
-				<mesh receiveShadow castShadow>
-					<boxGeometry args={[3.6, 7.8, 3.6]} />
-					<meshStandardMaterial {...stoneMat} bumpScale={0.026} />
-				</mesh>
-				{/* Top cantilevered cap */}
-				<mesh position={[0, 4.1, 0]} castShadow receiveShadow>
-					<boxGeometry args={[4.2, 0.40, 4.2]} />
-					<meshStandardMaterial {...stoneMat} bumpScale={0.022} />
-				</mesh>
-				<mesh position={[0, 3.86, 0]}>
-					<boxGeometry args={[3.8, 0.08, 3.8]} />
-					<meshStandardMaterial {...darkMat} />
-				</mesh>
-				{/* REAL THREE.JS POINTLIGHT casting light onto terrace */}
-				<pointLight
-					ref={lightRef}
-					position={[0, 0.8, -1.8]}
-					color="#ffaa48"
-					intensity={0.42}
-					distance={5.0}
-					decay={2}
-				/>
-			</group>
-
-			{/* ── 3. SECONDARY STEPPED SETBACK MASS & TERRACE ── */}
-			<group position={[1.8, 3.4, -0.7]}>
-				<mesh receiveShadow castShadow>
-					<boxGeometry args={[2.8, 5.6, 3.0]} />
-					<meshStandardMaterial {...stoneMat} bumpScale={0.024} />
-				</mesh>
-				{/* Cantilevered terrace slab */}
-				<mesh position={[0, 2.95, 0]} castShadow receiveShadow>
-					<boxGeometry args={[3.4, 0.32, 3.6]} />
-					<meshStandardMaterial {...stoneMat} bumpScale={0.022} />
-				</mesh>
-				<mesh position={[0, 2.75, 0]}>
-					<boxGeometry args={[3.0, 0.08, 3.2]} />
-					<meshStandardMaterial {...darkMat} />
-				</mesh>
-			</group>
-
-			{/* Horizontal cyan quantum datum near base */}
-			<mesh position={[0.4, 1.45, -1.9]}>
-				<boxGeometry args={[3.8, 0.025, 0.04]} />
-				<meshBasicMaterial color={techColor} transparent opacity={0.65} toneMapped={false} />
 			</mesh>
 		</group>
 	)
 }
+
+export const SanctuaryLeftWing = SanctuaryLeftScreenWing
+export const SanctuaryRightWing = SanctuaryRightScreenWing
 
 export default function WingWall(props) {
-	return props.position?.[0] < 0 ? (
-		<SanctuaryLeftWing {...props} />
+	return props.position?.[0] > 0 ? (
+		<SanctuaryLeftScreenWing {...props} />
 	) : (
-		<SanctuaryRightWing {...props} />
+		<SanctuaryRightScreenWing {...props} />
 	)
 }
-

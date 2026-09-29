@@ -6,7 +6,8 @@ import { Menu, X } from 'lucide-react'
 const links = [
 	{ id: 'home', label: 'THE SPARK' },
 	{ id: 'projects', label: 'THE BUILD' },
-	{ id: 'experience', label: 'ENGINEER' },
+	{ id: 'solve', label: 'THE SOLVE' },
+	{ id: 'experience', label: 'THE ENGINEER' },
 	{ id: 'skills', label: 'TOOLKIT' },
 	{ id: 'about', label: 'THE PERSON' },
 	{ id: 'contact', label: "WHAT'S NEXT" },

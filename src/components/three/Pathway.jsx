@@ -17,9 +17,10 @@ import { destinationById, JOURNEY_ORDER } from '../../data/destinations'
 // changes are expressed through width and wall-height instead.
 const CHAPTER_PROFILE = {
 	home: { width: 3.0, wallHeight: 0 },
-	projects: { width: 7.2, wallHeight: 2.3 },
-	experience: { width: 8.2, wallHeight: 3.2 },
-	skills: { width: 5.2, wallHeight: 1.5 },
+	projects: { width: 12.0, wallHeight: 0 },
+	solve: { width: 0, wallHeight: 0 },
+	experience: { width: 0, wallHeight: 0 },
+	skills: { width: 0, wallHeight: 0 },
 	about: { width: 3.6, wallHeight: 0.55 },
 	contact: { width: 10.5, wallHeight: 0 },
 }
@@ -76,13 +77,20 @@ function buildFloorGeometry(samples) {
 	const normals = []
 	const indices = []
 	samples.forEach(({ point, perp, width }) => {
-		const half = point.length() < SPARK_CLEARANCE ? 0 : width / 2
+		const inSpark = point.length() < SPARK_CLEARANCE
+		const inSolve = Math.hypot(point.x, point.z - 38.0) < 16.0
+		const inEngineer = Math.hypot(point.x, point.z - 72.0) < 15.5
+		const inToolkit = Math.hypot(point.x - 21.8, point.z - 33.1) < 13.5
+		const half = (inSpark || inSolve || inEngineer || inToolkit) ? 0 : width / 2
 		positions.push(point.x + perp.x * half, point.y, point.z + perp.z * half)
 		positions.push(point.x - perp.x * half, point.y, point.z - perp.z * half)
 		normals.push(0, 1, 0, 0, 1, 0)
 	})
 	for (let i = 0; i < samples.length - 1; i++) {
-		if (samples[i].point.z < 13.5 || samples[i + 1].point.z < 13.5) continue
+		if (samples[i].point.z < 26.0 || samples[i + 1].point.z < 26.0) continue
+		if (Math.hypot(samples[i].point.x, samples[i].point.z - 38.0) < 16.0) continue
+		if (Math.hypot(samples[i].point.x, samples[i].point.z - 72.0) < 15.5) continue
+		if (Math.hypot(samples[i].point.x - 21.8, samples[i].point.z - 33.1) < 13.5) continue
 		const a = i * 2, b = i * 2 + 1, c = (i + 1) * 2, d = (i + 1) * 2 + 1
 		indices.push(a, c, b, b, c, d)
 	}
@@ -102,7 +110,10 @@ function buildWallGeometry(samples, sign) {
 	let vertexCount = 0
 	const segments = []
 	samples.forEach(({ point, perp, width, wallHeight }) => {
-		if (point.z < 13.5 || wallHeight < 0.05) { segments.push(null); return }
+		const inSolve = Math.hypot(point.x, point.z - 38.0) < 16.0
+		const inEngineer = Math.hypot(point.x, point.z - 72.0) < 15.5
+		const inToolkit = Math.hypot(point.x - 21.8, point.z - 33.1) < 13.5
+		if (point.z < 26.0 || inSolve || inEngineer || inToolkit || wallHeight < 0.05) { segments.push(null); return }
 		const half = width / 2
 		const bx = point.x + perp.x * half * sign
 		const bz = point.z + perp.z * half * sign
@@ -126,30 +137,8 @@ function buildWallGeometry(samples, sign) {
 
 // Thin emissive struts along Toolkit's stretch — a lighter, schematic lattice
 // instead of a solid panel, matching "the underlying systems become visible."
-function ToolkitLattice({ samples }) {
-	const struts = useMemo(() => {
-		const skillsT = 0.62 // approximate arc position of the skills chapter
-		const list = []
-		samples.forEach(({ point, perp, width, wallHeight }, index) => {
-			const t = index / (samples.length - 1)
-			if (Math.abs(t - skillsT) > 0.09) return
-			if (index % 14 !== 0) return
-			const half = width / 2
-			list.push([point.x + perp.x * half, point.z + perp.z * half, wallHeight])
-			list.push([point.x - perp.x * half, point.z - perp.z * half, wallHeight])
-		})
-		return list
-	}, [samples])
-	return (
-		<group>
-			{struts.map(([x, z, height], index) => (
-				<mesh key={index} position={[x, height / 2, z]}>
-					<boxGeometry args={[0.03, height, 0.03]} />
-					<meshBasicMaterial color="#5fb8d6" transparent opacity={0.45} />
-				</mesh>
-			))}
-		</group>
-	)
+function ToolkitLattice() {
+	return null
 }
 
 function Pathway() {
@@ -160,7 +149,7 @@ function Pathway() {
 	const edgeGeometry = useMemo(() => {
 		const positions = []
 		samples.forEach(({ point, perp, width }) => {
-			if (point.z < 13.5) return
+			if (point.z < 26.0) return
 			const half = width / 2
 			positions.push(point.x + perp.x * half, point.y + 0.01, point.z + perp.z * half)
 		})
@@ -170,7 +159,7 @@ function Pathway() {
 	}, [samples])
 
 	return (
-		<group>
+		<group userData={{ cameraIgnore: true }}>
 			<mesh geometry={floorGeometry}>
 				<meshStandardMaterial color="#121a29" metalness={0.32} roughness={0.88} side={THREE.DoubleSide} />
 			</mesh>

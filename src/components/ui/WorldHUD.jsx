@@ -16,7 +16,7 @@ function WorldHUD({ isLocked, isExploring, isMobile, cameraMode, nearby, activeT
 	// while the hero identity panel is actually hidden (locked/exploring, or on
 	// the Engineer stage where the panel is dimmed) — showing it whenever a
 	// stage is merely "active" duplicated the identity text at every stage.
-	const showStageIndicator = Boolean(activeStage) && !navigationStatus && (isLocked || activeDestination === 'experience')
+	const showStageIndicator = Boolean(activeStage) && !navigationStatus && (isLocked || activeDestination === 'experience' || activeDestination === 'skills')
 	return (
 		<div className="world-hud">
 			<button className="exit-world" type="button" onClick={onExit}><LogOut size={12} /> EXIT 3D MODE</button>
@@ -29,7 +29,7 @@ function WorldHUD({ isLocked, isExploring, isMobile, cameraMode, nearby, activeT
 			</div>}
 			{(isLocked || isExploring || isMobile) && <ControlsGuide isMobile={isMobile} cameraMode={cameraMode} />}
 			<InteractionPrompt target={nearby} onInteract={onInteract} />
-			{activeTarget && activeTarget.id !== 'projects' && !isQuintesysTarget(activeTarget) && <div className={activeTarget.type === 'state' ? 'interaction-card state-card' : 'interaction-card'}><button type="button" aria-label="Close interaction" onClick={() => onInteract?.(null)}>+</button>{activeTarget.type === 'state' ? <><p className="hud-kicker">{activeTarget.title}</p><h3>{activeTarget.detail}</h3><p>{activeTarget.subtitle}</p><span className="state-card-action">EXPLORE REGION</span></> : <><p className="hud-kicker">{activeTarget.worldName || activeTarget.label}</p><h3>{activeTarget.description}</h3><p>{activeTarget.detail || 'More detail coming soon.'}</p></>}</div>}
+			{activeTarget && activeTarget.id !== 'projects' && !isQuintesysTarget(activeTarget) && activeTarget.type !== 'spark-question' && activeTarget.type !== 'build-project' && <div className={activeTarget.type === 'state' ? 'interaction-card state-card' : 'interaction-card'}><button type="button" aria-label="Close interaction" onClick={() => onInteract?.(null)}>+</button>{activeTarget.type === 'state' ? <><p className="hud-kicker">{activeTarget.title}</p><h3>{activeTarget.detail}</h3><p>{activeTarget.subtitle}</p><span className="state-card-action">EXPLORE REGION</span></> : <><p className="hud-kicker">{activeTarget.worldName || activeTarget.label}</p><h3>{activeTarget.description}</h3><p>{activeTarget.detail || 'More detail coming soon.'}</p></>}</div>}
 			{onTouchLook && <div className="touch-look-zone" onTouchStart={onTouchLook} onTouchMove={onTouchLook} onTouchEnd={onTouchLook} aria-hidden="true" />}
 		</div>
 	)

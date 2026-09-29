@@ -79,12 +79,30 @@ function PipelineStrip({ pipeline, origin }) {
 	)
 }
 
-function QuintesysCampus({ selectedStateId, onSelect }) {
+function QuintesysCampus({ selectedStateId, onSelect, activeDestination }) {
 	const continent = destinationById.experience
 	const [x, , z] = quintesysGeography.center
 	const selected = experienceStates.find((state) => state.id === selectedStateId)
 	const automationPipeline = experienceStates.find((state) => state.id === 'bi-automation-state')?.pipeline
-	return <group>
+	const campusGroupRef = useRef()
+
+	// Quintesys represents Chapter 04 (ENGINEER).
+	// It must NEVER appear or leak any labels into Chapter 01 (The Spark), Chapter 02 (The Build), or Chapter 03 (The Solve).
+	useFrame(({ camera }) => {
+		if (campusGroupRef.current) {
+			const isNearSolve = Math.hypot(camera.position.x, camera.position.z - 38.0) < 18.0 || (camera.position.z >= 26.0 && camera.position.x < 5.0)
+			const isNearSparkOrBuild = camera.position.z < 26.0 && camera.position.x < 4.0
+			const isOtherChapterActive = activeDestination === 'home' || activeDestination === 'projects' || activeDestination === 'solve'
+			campusGroupRef.current.visible = !isOtherChapterActive && !isNearSolve && !isNearSparkOrBuild
+		}
+	})
+
+	// Absolute component gate: if in Spark, Build, or Solve, do not mount/render Quintesys campus
+	if (activeDestination === 'home' || activeDestination === 'projects' || activeDestination === 'solve') {
+		return null
+	}
+
+	return <group ref={campusGroupRef}>
 		{/* Connected terrain masses create one irregular continent; states retain their own hit areas above it. */}
 		<group position={[x, 0, z]} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => { event.stopPropagation(); onSelect(continent) }} onDoubleClick={(event) => event.stopPropagation()} onPointerOver={() => { document.body.style.cursor = 'pointer' }} onPointerOut={() => { document.body.style.cursor = '' }}>
 			{quintesysGeography.terrainMasses.map((mass, index) => <group key={index} position={mass.position} rotation={[0, mass.rotation, 0]}><mesh scale={[mass.scale[0], 1, mass.scale[1]]}><cylinderGeometry args={[mass.radius, mass.radius * 1.13, mass.height, 10]} /><meshStandardMaterial color="#1d4151" emissive={continent.colorTheme} emissiveIntensity={selected ? 0.035 : 0.075} metalness={0.58} roughness={0.86} /></mesh><mesh position={[0, mass.height / 2 + 0.012, 0]} scale={[mass.scale[0] * 0.91, 1, mass.scale[1] * 0.89]}><cylinderGeometry args={[mass.radius * 0.9, mass.radius, 0.028, 10]} /><meshStandardMaterial color="#284d5d" roughness={0.88} metalness={0.42} /></mesh></group>)}

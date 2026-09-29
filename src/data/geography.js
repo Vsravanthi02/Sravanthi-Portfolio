@@ -30,9 +30,9 @@ export const experienceStates = [
 		id: 'genai-state', continentId: 'experience', type: 'state', title: 'GENAI STATE', label: 'GENAI', subtitle: 'QLoRA / LLM Engineering',
 		position: [5.45, 0, 26.75], radius: 1.3, theme: '#69e3ff', terrain: 'generative',
 		description: 'Generative AI & LLM Engineering.', detail: 'QUINTESYS CONTINENT',
-		whatBuilt: 'QLoRA fine-tuning of Qwen2.5-Coder-7B-Instruct on 1,059 schema-annotated samples for PBIP visualContainer JSON generation, with schema-constrained generation and prompt engineering across the AI workflow.',
-		technologies: ['QLoRA', 'Qwen2.5-Coder-7B-Instruct', 'Schema-Constrained Generation', 'Prompt Engineering', 'AI Workflows'],
-		impact: '9/10 schema validity on generated PBIP visualContainer JSON.',
+		whatBuilt: 'QLoRA fine-tuning of Qwen2.5-Coder-7B-Instruct on 1,059 schema-annotated samples for PBIP visualContainer JSON generation, with prompt engineering and structured validation.',
+		technologies: ['QLoRA', 'Qwen2.5-Coder-7B-Instruct', 'Schema Validation', 'Prompt Engineering', 'AI Workflows'],
+		impact: '9/10 successful Power BI Desktop renderings on held-out visual prompts (compared to 6/10 for Claude Sonnet 4.6).',
 		workItems: [
 			{
 				id: 'qlora-fine-tuning',
@@ -42,7 +42,7 @@ export const experienceStates = [
 					{ label: 'TRAINING DATA', value: '1,059 samples' },
 					{ label: 'TARGET', value: 'PBIP visualContainer JSON generation' },
 					{ label: 'METHOD', value: 'QLoRA' },
-					{ label: 'RESULT', value: '9/10 schema validity', emphasis: true },
+					{ label: 'RESULT', value: '9/10 rendering validity', emphasis: true },
 				],
 			},
 		],
@@ -51,17 +51,16 @@ export const experienceStates = [
 		id: 'ai-systems-state', continentId: 'experience', type: 'state', title: 'AI SYSTEMS STATE', label: 'AI SYSTEMS', subtitle: 'Production AI Architecture',
 		position: [9.2, 0, 25.25], radius: 1.22, theme: '#8dbdff', terrain: 'systems',
 		description: 'AI systems and production engineering.', detail: 'QUINTESYS CONTINENT',
-		whatBuilt: 'Production AI system architecture covering model serving and inference (ViT / ResNet) through FastAPI and gRPC on Ray Serve, MLflow-managed artifact/version tracking, and Azure VM-based training, deployment, and debugging.',
-		technologies: ['ViT', 'ResNet', 'FastAPI', 'gRPC', 'Ray Serve', 'MLflow', 'Azure VM', 'Software Testing'],
-		impact: 'Served ViT/ResNet inference through FastAPI, gRPC, and Ray Serve, with MLflow-tracked experiments/models and Azure VM training, deployment, and debugging workflows.',
+		whatBuilt: 'AI system components covering model inference serving through FastAPI and gRPC, MLflow artifact and version tracking, and Azure VM-based training, deployment, and debugging.',
+		technologies: ['FastAPI', 'gRPC', 'MLflow', 'Azure VMs', 'Software Testing'],
+		impact: 'Served model inference through FastAPI and gRPC, with MLflow experiment and artifact tracking and Azure VM debugging workflows.',
 		workItems: [
 			{
 				id: 'production-model-serving',
 				title: 'PRODUCTION MODEL SERVING',
-				subtitle: 'ViT / ResNet inference',
+				subtitle: 'Inference and integration',
 				fields: [
-					{ label: 'MODEL', value: 'ViT / ResNet' },
-					{ label: 'SERVING', value: 'FastAPI · gRPC · Ray Serve' },
+					{ label: 'SERVING', value: 'FastAPI · gRPC' },
 					{ label: 'MLOPS', value: 'MLflow', detail: 'Artifact / version tracking' },
 					{ label: 'INFRASTRUCTURE', value: 'Azure VMs', detail: 'Training · deployment · debugging' },
 				],
@@ -93,45 +92,48 @@ export const experienceStates = [
 		id: 'bi-automation-state', continentId: 'experience', type: 'state', title: 'BI AUTOMATION STATE', label: 'BI AUTOMATION', subtitle: 'Cognos → Power BI Automation',
 		position: [5.9, 0, 30.75], radius: 1.28, theme: '#74e6c5', terrain: 'automation',
 		description: 'BI migration and report automation.', detail: 'QUINTESYS CONTINENT',
-		whatBuilt: 'End-to-end AI-powered automation that parses Cognos XML/model definitions, extracts datasets and layout, and migrates reports to Power BI and Power BI Paginated Reports (RDL), with automated validation and a fix loop.',
-		technologies: ['Python', 'LLMs', 'Power BI', 'XML', 'RDL'],
-		impact: 'Automated Cognos → Power BI and Cognos → Power BI Paginated Reports migration, including RDL generation, automated validation, and an automated fix loop.',
+		whatBuilt: 'Automating the Cognos reports to Power BI Paginated Reports (RDL) and Power BI Desktop workflows through XML extraction, dataset and layout mapping, RDL and visualContainer JSON generation, validation, and correction.',
+		technologies: ['Python', 'Power BI', 'XML', 'RDL', 'PBIP'],
+		impact: 'Automating the Cognos reports to Power BI Paginated Reports workflow through XML extraction, RDL generation, validation, and correction.',
 		workItems: [
 			{
 				id: 'cognos-to-power-bi',
 				title: 'COGNOS → POWER BI',
-				subtitle: 'AI-powered BI migration',
+				subtitle: 'Desktop visual generation',
 				fields: [
 					{ label: 'PARSING', value: 'Cognos XML / model' },
 					{ label: 'EXTRACTION', value: 'Dataset + layout' },
-					{ label: 'TARGET', value: 'Power BI' },
+					{ label: 'TARGET', value: 'Power BI Desktop (PBIP)' },
 				],
 			},
 			{
 				id: 'cognos-to-paginated-reports',
 				title: 'COGNOS → PAGINATED REPORTS',
-				subtitle: 'AI-powered report migration',
+				subtitle: 'RDL report automation',
 				fields: [
-					{ label: 'PARSING', value: 'Cognos XML / model' },
-					{ label: 'EXTRACTION', value: 'Dataset + layout' },
+					{ label: 'PARSING', value: 'Cognos XML reports' },
+					{ label: 'EXTRACTION', value: 'Parameters + data + layout' },
 					{ label: 'TARGET', value: 'Power BI Paginated Reports', detail: 'RDL generation' },
 				],
 			},
 		],
 		pipeline: [
-			['COGNOS', 'Source Cognos XML reports and models.'],
-			['XML / MODEL PARSING', 'Parses Cognos XML report and model definitions.'],
-			['DATASET + LAYOUT EXTRACTION', 'Extracts underlying datasets and report layout.'],
-			['LLM-ASSISTED CONVERSION', 'LLM converts parsed Cognos formulas into target expressions.'],
-			['REPORT GENERATION', 'Generates the target report definition.'],
-			['RDL / POWER BI', 'Outputs RDL and Power BI report artifacts.'],
-			['LLM-JUDGE VALIDATION', 'LLM judge and structural validation of generated expressions.'],
-			['AUTOMATED FIX LOOP', 'Automated correction loop resolves validation issues.'],
+			['COGNOS REPORTS', 'Source Cognos reports and XML definitions.'],
+			['XML EXTRACTION', 'Parses Cognos XML report and model definitions.'],
+			['DATASET + LAYOUT EXTRACTION', 'Extracts underlying datasets, parameters, and report layout.'],
+			['RDL & VISUAL GENERATION', 'Generates RDL specifications and PBIP visualContainer JSON.'],
+			['VALIDATION', 'Schema validation and Power BI Desktop rendering checks.'],
+			['CORRECTION LOOP', 'Correction loop resolves syntax, expression, and layout issues.'],
 		],
 	},
 ]
 
-export const isQuintesysTarget = (target) => Boolean(target) && (target.id === 'experience' || (target.type === 'state' && target.continentId === 'experience'))
+export const isQuintesysTarget = (target) =>
+	Boolean(target) &&
+	(target.id === 'experience' ||
+		target.id === 'quintesys' ||
+		target.type === 'quintesys-experience' ||
+		(target.type === 'state' && target.continentId === 'experience'))
 
 export const stateById = Object.fromEntries(experienceStates.map((state) => [state.id, state]))
 export const geographicTargets = experienceStates

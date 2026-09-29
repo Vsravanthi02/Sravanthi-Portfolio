@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
+import { useFrame } from '@react-three/fiber'
 
 // Photographic-Quality Cinematic Panoramic Golden-Hour World Vista.
 // Matches primary visual benchmark media_1790162892176.jpg:
@@ -278,12 +279,32 @@ function createPortalVistaTexture() {
 function ContinuousWorldVista({ archRadius = 5.2, archZ = 9.5 }) {
 	const globalSky = useMemo(() => createGlobalSkyTexture(), [])
 	const portalVista = useMemo(() => createPortalVistaTexture(), [])
+	const apertureMeshRef = useRef()
 
 	// Portal aperture plane dimensions (placed behind the spatial tunnel exit)
 	const planeW = archRadius * 2.35
 	const planeH = archRadius * 2.35
 	const planeZ = archZ + 2.6
 	const planeCY = archRadius * 1.05
+
+	// Smoothly fade out the 2D aperture vista plane as the player walks forward
+	// towards the portal (z > 3.8m -> 6.5m), revealing the continuous 360-degree
+	// celestial sky sphere and monumental colonnade of The Build without any plane clipping.
+	useFrame(({ camera }) => {
+		if (!apertureMeshRef.current) return
+		const cz = camera.position.z
+		if (cz <= 3.8) {
+			apertureMeshRef.current.visible = true
+			apertureMeshRef.current.material.opacity = 1.0
+		} else if (cz >= 6.5) {
+			apertureMeshRef.current.visible = false
+			apertureMeshRef.current.material.opacity = 0.0
+		} else {
+			apertureMeshRef.current.visible = true
+			const fade = 1.0 - (cz - 3.8) / 2.7
+			apertureMeshRef.current.material.opacity = THREE.MathUtils.clamp(fade, 0, 1)
+		}
+	})
 
 	return (
 		<group position={[0, 0, 0]} userData={{ cameraIgnore: true }}>
@@ -294,9 +315,9 @@ function ContinuousWorldVista({ archRadius = 5.2, archZ = 9.5 }) {
 			</mesh>
 
 			{/* 2. DEDICATED HIGH-RESOLUTION PORTAL APERTURE VISTA */}
-			<mesh position={[0, planeCY, planeZ]} rotation={[0, Math.PI, 0]}>
+			<mesh ref={apertureMeshRef} position={[0, planeCY, planeZ]} rotation={[0, Math.PI, 0]}>
 				<planeGeometry args={[planeW, planeH]} />
-				<meshBasicMaterial map={portalVista} side={THREE.DoubleSide} toneMapped={false} fog={false} />
+				<meshBasicMaterial map={portalVista} side={THREE.DoubleSide} transparent opacity={1.0} toneMapped={false} fog={false} />
 			</mesh>
 		</group>
 	)

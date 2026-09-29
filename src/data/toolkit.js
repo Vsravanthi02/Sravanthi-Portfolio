@@ -3,7 +3,7 @@
 // experienceState's technologies array. This guarantees nothing here can drift
 // from, or invent beyond, what's already established as real (per the redesign
 // brief's explicit "do not invent technologies I haven't used" rule): the
-// PyTorch/Transformers/YOLO/OpenCV/pgvector/Docker examples suggested in that
+// PyTorch/Transformers/YOLO/OpenCV/Docker examples suggested in that
 // brief are deliberately excluded because they aren't confirmed anywhere in
 // the existing project data.
 import { archivaProject } from './projects'

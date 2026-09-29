@@ -16,24 +16,52 @@ export const destinations = [
 	},
 	{
 		id: 'projects', label: 'THE BUILD', name: 'THE BUILD', worldName: 'THE BUILD', type: 'stage',
-		description: 'Ideas become working systems.', detail: 'ARCHIVA — an agentic RAG platform, walked as a flowing knowledge system.',
-		position: [0, 0, 16], arrival: [0, 0, 14.5], lookAt: [0, 1.3, 16],
-		colorTheme: '#b39cff', terrain: 'mesa', regions: [{ id: 'archiva', name: 'ARCHIVA', status: 'active' }],
+		description: 'Ideas become working systems.', detail: '01 ARCHIVA & 02 EXPRESSION & SIGN LANGUAGE DETECTION — walked as physical engineering installations.',
+		position: [0, 0, 21.0], arrival: [0, 0, 18.0], lookAt: [0, 1.9, 23.5],
+		colorTheme: '#35d8ff', terrain: 'colonnade',
+		regions: [
+			{ id: 'archiva', name: 'ARCHIVA', status: 'active' },
+			{ id: 'vision', name: 'EXPRESSION & SIGN LANGUAGE DETECTION', status: 'active' }
+		],
 	},
 	{
-		// Moved from the old [8,0,-5] to fit the new arc — see file header.
-		// src/data/geography.js was translated by the same (+0.6, 0, +33.3) delta.
-		id: 'experience', label: 'ENGINEER', name: 'ENGINEER', worldName: 'ENGINEER', type: 'stage',
-		description: 'Professional AI, GenAI, automation and data engineering experience.', detail: 'QUINTESYS — AI engineering, walked as a working pipeline.',
-		position: [8.6, 0, 28.3], arrival: [7.74, 0, 27.07], lookAt: [8.6, 1.2, 28.3],
-		colorTheme: '#63e6ff', terrain: 'delta',
-		stateIds: ['genai-state', 'ai-systems-state', 'agent-systems-state', 'bi-automation-state'],
+		id: 'solve', label: 'THE SOLVE', name: 'THE SOLVE', worldName: 'THE SOLVE', type: 'stage',
+		description: 'Problems are where systems become real.', detail: '01 RETRIEVAL, 02 PERCEPTION, 03 UNCERTAINTY — engineering under uncertainty.',
+		position: [0, 0, 38.0], arrival: [0, 0, 31.0], lookAt: [0, 1.8, 38.0],
+		colorTheme: '#ffb45c', terrain: 'rotunda',
+		regions: [
+			{ id: 'retrieval', name: 'RETRIEVAL', status: 'active' },
+			{ id: 'perception', name: 'PERCEPTION', status: 'active' },
+			{ id: 'uncertainty', name: 'UNCERTAINTY', status: 'active' }
+		],
 	},
 	{
-		id: 'skills', label: 'TOOLKIT', name: 'TOOLKIT', worldName: 'TOOLKIT', type: 'stage',
-		description: 'The tools that power the work.', detail: 'Engineering tools, not decorative badges.',
-		position: [21.8, 0, 33.1], arrival: [20.39, 0, 32.59], lookAt: [21.8, 1.15, 33.1],
-		colorTheme: '#70b9ff', terrain: 'terraces', regions: [],
+		id: 'experience', label: 'THE ENGINEER', name: 'THE ENGINEER', worldName: 'THE ENGINEER', type: 'stage',
+		description: 'Engineering in the real world.', detail: '01 HOW I ENGINEER, 02 COGNOS → POWER BI (PAGINATED), 03 COGNOS → POWER BI (DESKTOP), 04 LLM / GENAI, 05 AI SYSTEMS, 06 SOFTWARE ENGINEERING.',
+		position: [0, 0, 72.0], arrival: [0, 0, 68.2], lookAt: [0, 2.15, 72.6],
+		colorTheme: '#ffb45c', terrain: 'observatory',
+		regions: [
+			{ id: 'howIEngineer', name: 'HOW I ENGINEER', status: 'active' },
+			{ id: 'cognosPaginated', name: 'COGNOS → POWER BI: PAGINATED', status: 'active' },
+			{ id: 'cognosDesktop', name: 'COGNOS → POWER BI: DESKTOP', status: 'active' },
+			{ id: 'genaiEngineering', name: 'LLM / GENAI ENGINEERING', status: 'active' },
+			{ id: 'aiSystems', name: 'AI SYSTEMS / AUTOMATION', status: 'active' },
+			{ id: 'softwareEngineering', name: 'SOFTWARE ENGINEERING', status: 'active' }
+		],
+	},
+	{
+		id: 'skills', label: 'TOOLKIT', name: "THE ENGINEER'S TOOLKIT", worldName: "THE ENGINEER'S TOOLKIT", type: 'stage',
+		description: 'The tools behind the systems.', detail: '01 AI/ML ENGINEERING, 02 GENAI & RAG, 03 VISION, 04 DATA & RETRIEVAL, 05 AI SYSTEMS, 06 VIZ & AUTOMATION.',
+		position: [21.8, 0, 33.1], arrival: [21.8, 0, 26.2], lookAt: [21.8, 2.15, 33.6],
+		colorTheme: '#00d2ff', terrain: 'observatory',
+		regions: [
+			{ id: 'aiMl', name: 'AI / ML ENGINEERING', status: 'active' },
+			{ id: 'genAiRag', name: 'GENERATIVE AI & RAG', status: 'active' },
+			{ id: 'computerVision', name: 'COMPUTER VISION', status: 'active' },
+			{ id: 'dataRetrieval', name: 'DATA & RETRIEVAL', status: 'active' },
+			{ id: 'aiSystems', name: 'AI SYSTEMS & INFERENCE', status: 'active' },
+			{ id: 'vizBiAutomation', name: 'VISUALIZATION, BI & AUTOMATION', status: 'active' }
+		],
 	},
 	{
 		id: 'about', label: 'THE PERSON', name: 'THE PERSON', worldName: 'THE PERSON', type: 'stage',
@@ -52,6 +80,6 @@ export const destinations = [
 // Ordered anchors for the continuous spine curve (Pathway.jsx) — the same
 // journey order, exposed once here so the curve and the stage lookup can't
 // drift apart.
-export const JOURNEY_ORDER = ['home', 'projects', 'experience', 'skills', 'about', 'contact']
+export const JOURNEY_ORDER = ['home', 'projects', 'solve', 'experience', 'skills', 'about', 'contact']
 
 export const destinationById = Object.fromEntries(destinations.map((destination) => [destination.id, destination]))

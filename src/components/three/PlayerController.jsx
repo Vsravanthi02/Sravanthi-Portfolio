@@ -32,7 +32,7 @@ const CAMERA_COLLISION_DISTANCE = 2.5
 // the spine now reaches ~48.7 units out at What's Next, vs. ~15 in the old
 // hub-and-spoke layout, so this was raised to match (with headroom to still
 // explore past the final stage rather than hitting a wall right at it).
-const WORLD_MOVEMENT_BOUNDARY = 58
+const WORLD_MOVEMENT_BOUNDARY = 98
 const NAVIGATION_MIN_DURATION = 0.9
 const NAVIGATION_MAX_DURATION = 2.8
 
@@ -172,6 +172,8 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 			camera.lookAt(navigation.target.lookAt[0], navigation.target.lookAt[1], navigation.target.lookAt[2])
 			onPositionChange?.([...playerPosition.current])
 			if (progress >= 1) {
+				cameraYaw.current = targetYaw
+				cameraYawTarget.current = targetYaw
 				stageLookTargetRef.current = navigation.target.lookAt ? { x: navigation.target.lookAt[0], y: navigation.target.lookAt[1], z: navigation.target.lookAt[2] } : null
 				navigationRef.current = null
 				onNavigationState?.({ active: false, arrived: navigation.target.id })
