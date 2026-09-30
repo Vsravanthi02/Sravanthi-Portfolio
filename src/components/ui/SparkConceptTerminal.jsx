@@ -20,6 +20,7 @@ export default function SparkConceptTerminal({ question, onClose, onNavigate }) 
 		metadata,
 		targetStage,
 		targetStateId,
+		targetDestinationId,
 		targetLabel,
 		accentColor
 	} = question
@@ -92,7 +93,7 @@ export default function SparkConceptTerminal({ question, onClose, onNavigate }) 
 									className="primary-button"
 									onClick={() => {
 										onClose?.()
-										onNavigate?.(targetStage, targetStateId)
+										onNavigate?.(targetDestinationId || targetStateId || targetStage, targetStateId)
 									}}
 									style={{ borderColor: accentColor }}
 								>

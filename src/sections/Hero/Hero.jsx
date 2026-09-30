@@ -12,6 +12,8 @@ import BuildProjectTerminal from '../../components/ui/BuildProjectTerminal'
 import SolveChamberTerminal from '../../components/ui/SolveChamberTerminal'
 import EngineerStationTerminal from '../../components/ui/EngineerStationTerminal'
 import ToolkitStationTerminal from '../../components/ui/ToolkitStationTerminal'
+import PersonTopicTerminal from '../../components/ui/PersonTopicTerminal'
+import NextTerminalModal from '../../components/ui/NextTerminalModal'
 import { destinationById, destinations } from '../../data/destinations'
 import { isQuintesysTarget } from '../../data/geography'
 
@@ -47,8 +49,9 @@ function Hero() {
 		if (!destination) return
 		setActiveTarget(null)
 		previousDestinationRef.current = activeDestinationRef.current
-		setActiveDestination(id)
-		activeDestinationRef.current = id
+		const stageId = destination.stageId || destination.id
+		setActiveDestination(stageId)
+		activeDestinationRef.current = stageId
 		setNavigationTarget({ ...destination, requestId: `${id}-${Date.now()}` })
 	}, [])
 	useEffect(() => {
@@ -56,7 +59,7 @@ function Hero() {
 			const id = window.location.hash.slice(1) || 'home'
 			if (suppressHashNavigation.current) {
 				suppressHashNavigation.current = false
-				return
+				if (id === activeDestinationRef.current) return
 			}
 			requestDestination(id)
 		}
@@ -66,8 +69,11 @@ function Hero() {
 		return () => window.removeEventListener('hashchange', handleHashChange)
 	}, [requestDestination])
 	const handleNavigationClick = useCallback((id) => {
-		if (window.location.hash.slice(1) === id) requestDestination(id)
-		else window.location.hash = `#${id}`
+		suppressHashNavigation.current = false
+		requestDestination(id)
+		if (window.location.hash.slice(1) !== id) {
+			window.location.hash = `#${id}`
+		}
 	}, [requestDestination])
 	const handleNavigationState = useCallback((state) => {
 		navigationActiveRef.current = Boolean(state.active)
@@ -150,7 +156,10 @@ function Hero() {
 				<SparkConceptTerminal
 					question={activeTarget}
 					onClose={() => setActiveTarget(null)}
-					onNavigate={(stageId) => handleNavigationClick(stageId)}
+					onNavigate={(targetId, stateId) => {
+						const destId = targetId || stateId
+						handleNavigationClick(destId)
+					}}
 				/>
 			)}
 			{activeTarget?.type === 'build-project' && (
@@ -178,6 +187,19 @@ function Hero() {
 					target={activeTarget}
 					onClose={() => setActiveTarget(null)}
 					onSelectStation={(st) => setActiveTarget(st)}
+				/>
+			)}
+			{(activeTarget?.type === 'person-topic' || activeTarget?.id === 'about') && (
+				<PersonTopicTerminal
+					topic={activeTarget}
+					onClose={() => setActiveTarget(null)}
+					onSelectTopic={(t) => setActiveTarget({ ...t, type: 'person-topic' })}
+				/>
+			)}
+			{(activeTarget?.type === 'next-stage' || activeTarget?.id === 'contact' || activeTarget?.id === 'next') && (
+				<NextTerminalModal
+					target={activeTarget}
+					onClose={() => setActiveTarget(null)}
 				/>
 			)}
 			<div className="hero-index" aria-hidden="true">01 <span>/</span> 06</div>

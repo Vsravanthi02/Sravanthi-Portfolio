@@ -266,13 +266,15 @@ export default function SolveRetrieval({ playerPositionRef, onSelect }) {
 				{/* Title */}
 				<Text
 					position={[0, 0.22, 0]}
-					fontSize={0.32}
+					fontSize={0.20}
+					maxWidth={3.6}
+					textAlign="center"
 					font="/fonts/SegoeUI-Bold.ttf"
-					letterSpacing={0.08}
+					letterSpacing={0.05}
 					color="#FAF8F2"
 					anchorX="center"
 					anchorY="middle"
-					outlineWidth={0.012}
+					outlineWidth={0.010}
 					outlineColor="#050a14"
 					material-toneMapped={false}
 					sdfGlyphSize={128}
@@ -361,7 +363,7 @@ export default function SolveRetrieval({ playerPositionRef, onSelect }) {
 					outlineColor="#050a14"
 					material-toneMapped={false}
 				>
-					[ E ] EXPLORE RETRIEVAL ↗
+					[ E ] EXPLORE CHAMBER 01 ↗
 				</Text>
 			</group>
 		</group>

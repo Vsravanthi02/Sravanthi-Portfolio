@@ -79,8 +79,36 @@ const STAGE_MOODS = {
 		accent: '#00d2ff',
 		accentIntensity: 0.25
 	},
-	about: { ambient: 0.55, hemi: 0.65, key: 1.7, keyColor: '#f2ead9', keyPos: [-4, 7, 3], accent: '#e6b073', accentIntensity: 7 },
-	contact: { ambient: 0.75, hemi: 1.2, key: 2.4, keyColor: '#f2ead9', keyPos: [-4, 7, 3], accent: '#6ff0d0', accentIntensity: 9 },
+	about: {
+		ambient: 0.42,
+		ambientColor: '#202a3a',
+		hemi: 0.52,
+		hemiSky: '#3d5c80',
+		hemiGround: '#1c1b18',
+		key: 0.85,
+		keyColor: '#fff5e6',
+		keyPos: [30, 10, 25],
+		sunRim: 1.35,
+		sunRimColor: '#ff9233',
+		sunRimPos: [36.4, 4.5, 52.0],
+		accent: '#c084fc',
+		accentIntensity: 0.35,
+	},
+	contact: {
+		ambient: 0.44,
+		ambientColor: '#1e2838',
+		hemi: 0.54,
+		hemiSky: '#3e587d',
+		hemiGround: '#1b1a17',
+		key: 0.88,
+		keyColor: '#fff4e3',
+		keyPos: [42, 11, 22],
+		sunRim: 1.40,
+		sunRimColor: '#ff9233',
+		sunRimPos: [48.0, 4.5, 12.0],
+		accent: '#00d2ff',
+		accentIntensity: 0.35,
+	},
 }
 const DEFAULT_MOOD = STAGE_MOODS.home
 

@@ -21,8 +21,8 @@ const CHAPTER_PROFILE = {
 	solve: { width: 0, wallHeight: 0 },
 	experience: { width: 0, wallHeight: 0 },
 	skills: { width: 0, wallHeight: 0 },
-	about: { width: 3.6, wallHeight: 0.55 },
-	contact: { width: 10.5, wallHeight: 0 },
+	about: { width: 0, wallHeight: 0 },
+	contact: { width: 0, wallHeight: 0 },
 }
 
 const SEGMENTS = 180

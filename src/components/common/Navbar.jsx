@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import { destinationById } from '../../data/destinations'
 
 // Display labels only — ids match src/data/destinations.js exactly so hash
 // routing/fly-to navigation is untouched.
@@ -15,10 +16,18 @@ const links = [
 
 function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
-	const [activeId, setActiveId] = useState(() => window.location.hash.slice(1) || 'home')
+	const [activeId, setActiveId] = useState(() => {
+		const raw = window.location.hash.slice(1) || 'home'
+		const dest = destinationById[raw]
+		return dest?.stageId || dest?.id || raw
+	})
 
 	useEffect(() => {
-		const handleHashChange = () => setActiveId(window.location.hash.slice(1) || 'home')
+		const handleHashChange = () => {
+			const raw = window.location.hash.slice(1) || 'home'
+			const dest = destinationById[raw]
+			setActiveId(dest?.stageId || dest?.id || raw)
+		}
 		window.addEventListener('hashchange', handleHashChange)
 		return () => window.removeEventListener('hashchange', handleHashChange)
 	}, [])

@@ -61,12 +61,22 @@ function World({ isMobile, enabled, isLocked, mobileInput, mobileLook, mobilePin
 
 	const updateVisibility = () => {
 		const curStage = activeDestination || 'home'
-		const navStage = navigationTarget?.id
+		const navStage = navigationTarget?.stageId || navigationTarget?.id
 
 		// Determine allowed stages strictly from topological adjacency
 		const allowedStages = new Set(STAGE_ADJACENCY[curStage] || [curStage, 'projects'])
 		if (navStage && STAGE_ADJACENCY[navStage]) {
 			STAGE_ADJACENCY[navStage].forEach((s) => allowedStages.add(s))
+		}
+
+		// Keep current physical position stages visible during travel
+		if (navigationTarget && playerPositionRef?.current) {
+			const px = playerPositionRef.current[0]
+			const pz = playerPositionRef.current[2]
+			for (const [sId, coords] of Object.entries(STAGE_COORDS)) {
+				const dist = Math.hypot(px - coords[0], pz - coords[2])
+				if (dist < 42.0) allowedStages.add(sId)
+			}
 		}
 
 		for (const [id, ref] of Object.entries(stageRefs)) {
@@ -99,7 +109,7 @@ function World({ isMobile, enabled, isLocked, mobileInput, mobileLook, mobilePin
 
 		{/* Individual Chapter Stages with Distance & Visibility Culling */}
 		<group ref={sparkRef}>
-			<SparkInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} />
+			<SparkInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} onNavigate={onNavigate} />
 		</group>
 		<group ref={buildRef}>
 			<BuildInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} onNavigate={onNavigate} />
@@ -114,10 +124,10 @@ function World({ isMobile, enabled, isLocked, mobileInput, mobileLook, mobilePin
 			<ToolkitInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} onNavigate={onNavigate} />
 		</group>
 		<group ref={personRef}>
-			<PersonInstallation onSelect={onInteract} />
+			<PersonInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} />
 		</group>
 		<group ref={nextRef}>
-			<NextInstallation onSelect={onInteract} />
+			<NextInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} />
 		</group>
 
 		<PlayerController enabled={enabled} isLocked={isLocked} isMobile={isMobile} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onNavigationState={onNavigationState} onPositionChange={onPositionChange} onRotationChange={onRotationChange} onZoomChange={onZoomChange} onCameraModeChange={onCameraModeChange} dragLookRef={dragLookRef} explorationEnabled={explorationEnabled} />

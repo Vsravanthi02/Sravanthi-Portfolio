@@ -126,7 +126,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 	useEffect(() => {
 		const cancelNavigation = (event) => {
 			if (event.key !== 'Escape' || !navigationRef.current) return
-			const cancelledId = navigationRef.current.target.id
+			const cancelledId = navigationRef.current.target.stageId || navigationRef.current.target.id
 			navigationRef.current = null
 			onNavigationState?.({ active: false, cancelled: true, id: cancelledId })
 		}
@@ -176,7 +176,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 				cameraYawTarget.current = targetYaw
 				stageLookTargetRef.current = navigation.target.lookAt ? { x: navigation.target.lookAt[0], y: navigation.target.lookAt[1], z: navigation.target.lookAt[2] } : null
 				navigationRef.current = null
-				onNavigationState?.({ active: false, arrived: navigation.target.id })
+				onNavigationState?.({ active: false, arrived: navigation.target.stageId || navigation.target.id })
 			}
 			return
 		}

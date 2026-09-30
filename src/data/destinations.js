@@ -65,15 +65,25 @@ export const destinations = [
 	},
 	{
 		id: 'about', label: 'THE PERSON', name: 'THE PERSON', worldName: 'THE PERSON', type: 'stage',
-		description: 'The person behind the systems.', detail: 'AI / GenAI Engineer.',
-		position: [35.3, 0, 29.5], arrival: [33.85, 0, 29.89], lookAt: [35.3, 1.15, 29.5],
-		colorTheme: '#8bb9d6', terrain: 'ridge', regions: [],
+		description: 'The person behind the systems.', detail: "01 MY JOURNEY, 02 WHAT I ENJOY, 03 WHERE I'M HEADED.",
+		position: [35.3, 0, 29.5], arrival: [34.66, 0, 27.08], lookAt: [36.43, 1.6, 33.75],
+		colorTheme: '#c084fc', terrain: 'sanctuary',
+		regions: [
+			{ id: 'journey', name: 'MY JOURNEY', status: 'active' },
+			{ id: 'enjoy', name: 'WHAT I ENJOY', status: 'active' },
+			{ id: 'headed', name: "WHERE I'M HEADED", status: 'active' }
+		],
 	},
 	{
 		id: 'contact', label: "WHAT'S NEXT", name: "WHAT'S NEXT", worldName: "WHAT'S NEXT", type: 'stage',
-		description: 'Same curiosity. Bigger possibilities.', detail: 'Resume, GitHub, LinkedIn, and how to reach me.',
-		position: [45.6, 0, 17.2], arrival: [44.64, 0, 18.35], lookAt: [45.6, 1.15, 17.2],
-		colorTheme: '#6ff0d0', terrain: 'coast', regions: [],
+		description: 'Same curiosity. Bigger possibilities.', detail: "01 OPPORTUNITIES, 02 LEARNING, 03 LET'S CONNECT.",
+		position: [45.6, 0, 17.2], arrival: [44.8, 0, 18.2], lookAt: [46.6, 1.5, 15.8],
+		colorTheme: '#00d2ff', terrain: 'observatory',
+		regions: [
+			{ id: 'opportunities', name: 'OPPORTUNITIES', status: 'active' },
+			{ id: 'learning', name: 'LEARNING', status: 'active' },
+			{ id: 'connect', name: "LET'S CONNECT", status: 'active' }
+		],
 	},
 ]
 
@@ -83,3 +93,65 @@ export const destinations = [
 export const JOURNEY_ORDER = ['home', 'projects', 'solve', 'experience', 'skills', 'about', 'contact']
 
 export const destinationById = Object.fromEntries(destinations.map((destination) => [destination.id, destination]))
+
+// Substation / Project destinations for direct navigation & Spark redirects
+destinationById['vision'] = {
+	id: 'vision',
+	stageId: 'projects',
+	label: 'EXPRESSION & SIGN LANGUAGE DETECTION',
+	name: 'EXPRESSION & SIGN LANGUAGE DETECTION',
+	worldName: 'THE BUILD',
+	type: 'substation',
+	position: [-4.6, 0, 20.8],
+	arrival: [-4.0, 0, 17.5],
+	lookAt: [-4.6, 2.0, 20.8],
+	colorTheme: '#6fe7ff',
+}
+
+destinationById['archiva'] = {
+	id: 'archiva',
+	stageId: 'projects',
+	label: 'ARCHIVA',
+	name: 'ARCHIVA',
+	worldName: 'THE BUILD',
+	type: 'substation',
+	position: [4.6, 0, 20.8],
+	arrival: [4.0, 0, 17.5],
+	lookAt: [4.6, 2.0, 20.8],
+	colorTheme: '#35d8ff',
+}
+
+destinationById['genaiEngineering'] = {
+	id: 'genaiEngineering',
+	stageId: 'experience',
+	label: 'LLM / GENAI ENGINEERING',
+	name: 'LLM / GENAI ENGINEERING',
+	worldName: 'THE ENGINEER',
+	type: 'substation',
+	position: [-6.10, 0, 73.90],
+	arrival: [-4.4, 0, 72.0],
+	lookAt: [-6.10, 1.75, 73.90],
+	colorTheme: '#a993ff',
+}
+destinationById['genai-engineering'] = destinationById['genaiEngineering']
+
+destinationById['aiSystems'] = {
+	id: 'aiSystems',
+	stageId: 'experience',
+	label: 'AI SYSTEMS / AUTOMATION',
+	name: 'AI SYSTEMS / AUTOMATION',
+	worldName: 'THE ENGINEER',
+	type: 'substation',
+	position: [8.20, 0, 72.20],
+	arrival: [6.0, 0, 71.0],
+	lookAt: [8.20, 1.75, 72.20],
+	colorTheme: '#6fe7ff',
+}
+destinationById['ai-systems'] = destinationById['aiSystems']
+
+// Aliases for stage navigation & compatibility
+destinationById['next'] = destinationById['contact']
+destinationById['engineer'] = destinationById['experience']
+destinationById['toolkit'] = destinationById['skills']
+destinationById['build'] = destinationById['projects']
+destinationById['person'] = destinationById['about']

@@ -27,53 +27,53 @@ export const SOLVE_CHAMBERS = {
 		id: 'retrieval',
 		type: 'solve-chamber',
 		number: '01',
-		title: 'RETRIEVAL',
-		theme: 'Information Retrieval & Noise Reduction',
-		subtitle: 'Finding the signal inside the noise.',
-		inscription: 'FROM INFORMATION TO INSIGHT',
-		quote: 'When information is vast, clarity is an architectural choice.',
-		summary: 'Modern knowledge systems rarely fail from a lack of data; they fail from an abundance of irrelevant noise. Transforming raw documents into precise, factual answers requires disciplined multi-stage retrieval, re-ranking, and grounded reasoning.',
+		title: 'FALSE POSITIVES IN SELF-CHECKING',
+		theme: 'VERIFICATION & GROUNDING',
+		subtitle: 'Catching hallucinations without rejecting correct answers.',
+		inscription: 'VERIFY WITHOUT OVER-FILTERING',
+		quote: 'How do we make verification strict enough to catch hallucinations without rejecting correct answers?',
+		summary: "Archiva’s reflection layer initially rejected some valid responses. Contradiction checks flagged honest answers such as ‘the documents don't say,’ while number-grounding checks rejected correct calculated totals when the result itself did not appear verbatim in the source. Follow-up rewriting could also anchor to a previous answer or unrelated question.",
 		// Camera at Z=31 looking at Z=38 (+Z forward): +X is screen left, -X is screen right
 		position: [6.8, 0, 41.5],
 		accentColor: '#35d8ff',
 		secondaryColor: '#69e3ff',
 		problem: {
-			title: 'Semantic Dilution & Keyword Mismatch',
-			statement: 'Standard lexical search fails on conceptual queries, while dense vector retrieval alone struggles with precise keywords, numbers, and technical identifiers. Documents contain high boilerplate noise that dilutes context windows.',
+			title: 'FALSE POSITIVES IN SELF-CHECKING',
+			statement: "Archiva’s reflection layer initially rejected some valid responses. Contradiction checks flagged honest answers such as ‘the documents don't say,’ while number-grounding checks rejected correct calculated totals when the result itself did not appear verbatim in the source. Follow-up rewriting could also anchor to a previous answer or unrelated question.",
 			challenges: [
-				{ aspect: 'Lexical vs Dense Mismatch', detail: 'BM25 catches exact identifiers but misses synonyms; vector embeddings catch concepts but confuse version numbers.' },
-				{ aspect: 'Context Window Flooding', detail: 'Injecting raw document chunks introduces irrelevant noise and distracts the reasoning LLM.' },
-				{ aspect: 'Information Hallucination', detail: 'When candidate passages are ambiguous, generative models tend to confabulate answers.' }
+				{ aspect: '1. OVER-SENSITIVE CONTRADICTION CHECKS', detail: 'Correct uncertainty statements could be interpreted as contradictions.' },
+				{ aspect: '2. STRICT NUMBER GROUNDING', detail: 'Valid arithmetic results were rejected because the final number was not explicitly written in the source.' },
+				{ aspect: '3. INCORRECT FOLLOW-UP ANCHORING', detail: 'Rewriting could inherit context from a previous answer or question when the new query was unrelated.' }
 			]
 		},
 		investigation: {
-			keyQuestion: 'How do we guarantee that the LLM receives only verified, high-density signal?',
-			technicalAnalysis: 'We split retrieval into two decoupled stages: high-recall candidate generation (hybrid lexical + dense retrieval) followed by a cross-encoder re-ranking pass that scores query-document pairs simultaneously with deep cross-attention, eliminating 80%+ of irrelevant noise before LLM prompting.'
+			keyQuestion: 'How do we make verification strict enough to catch hallucinations without rejecting correct answers?',
+			technicalAnalysis: "Verification logic was initially over-sensitive to negative phrasing and numerical mismatches. Contradiction evaluation flagged honest statements of document absence as conflicting assertions, while number-grounding checks failed to recognize arithmetic deductions from verified source values. Additionally, conversational query rewrites carried forward previous answer context even when users switched topics."
 		},
 		transformation: {
-			from: 'NOISE',
-			process: 'FILTER & RERANK',
-			to: 'INSIGHT',
+			from: 'OVER-FILTERING',
+			process: 'REFINED VERIFICATION',
+			to: 'GROUNDED ACCURACY',
 			stages: [
-				{ label: 'QUERY NORMALIZATION', input: 'Raw conversational user prompt', logic: 'Extract core intent, strip conversational filler, and expand technical terms.', output: 'Focused search query' },
-				{ label: 'HYBRID CANDIDATE FETCH', input: 'Normalized query vector & tokens', logic: 'Parallel execution across lexical index and embedding space for top-50 candidates.', output: 'Candidate chunk pool' },
-				{ label: 'CROSS-ENCODER RERANK', input: 'Query + Top candidate pairs', logic: 'Deep joint attention scoring cross-evaluating candidate relevance against query intent.', output: 'Top-5 authoritative chunks' },
-				{ label: 'FACTUAL GROUNDING', input: 'Top chunks + Strict system prompt', logic: 'Direct synthesis with citation boundaries and mandatory factual grounding checks.', output: 'Grounded factual insight' }
+				{ label: 'CONTRADICTION CHECK', input: 'Candidate response + retrieved evidence', logic: 'Refine verification logic so uncertainty statements are not incorrectly treated as contradictions.', output: 'Verification result' },
+				{ label: 'NUMBER GROUNDING', input: 'Calculated totals + source numeric figures', logic: 'Validate valid arithmetic results even when the final number is not explicitly written in the source.', output: 'Numerical grounding status' },
+				{ label: 'FOLLOW-UP ANCHORING', input: 'Current query + conversation history', logic: 'Prevent query rewrite from inheriting context from a previous answer or question when the new query is unrelated.', output: 'Disambiguated query' },
+				{ label: 'REFINED VERIFICATION', input: 'Grounded assertions + calibrated checks', logic: 'Verification rejects unsupported claims while preserving answers that are correctly grounded, calculated, or explicitly uncertain.', output: 'Reliable verified response' }
 			]
 		},
 		pipeline: [
-			{ id: 'query', label: 'QUERY', detail: 'Focused intent normalization stripping conversational filler.' },
-			{ id: 'retrieve', label: 'RETRIEVE', detail: 'High-recall candidate generation across lexical and dense indices.' },
-			{ id: 'rerank', label: 'RERANK', detail: 'Cross-encoder scoring isolating true semantic relevance from noise.' },
-			{ id: 'reason', label: 'REASON', detail: 'Synthesizing verified factual ground into actionable insight.' }
+			{ id: 'contradiction', label: 'CONTRADICTION CHECK', detail: 'Refine verification logic so uncertainty statements are not treated as contradictions.' },
+			{ id: 'number', label: 'NUMBER GROUNDING', detail: 'Validate arithmetic results without requiring verbatim matches in source text.' },
+			{ id: 'anchoring', label: 'FOLLOW-UP ANCHORING', detail: 'Prevent rewriting from inheriting context from unrelated previous answers.' },
+			{ id: 'verification', label: 'REFINED VERIFICATION', detail: 'Reject unsupported claims while preserving grounded, calculated, or uncertain answers.' }
 		],
 		engineeringPrinciple: {
-			name: 'Precision Over Volume',
-			axiom: 'A model with 500 tokens of high-density truth outperforms a model with 50,000 tokens of unranked context.',
-			ruleOfThumb: 'Always re-rank candidate documents before passing them into generative context.'
+			name: 'VERIFY WITHOUT OVER-FILTERING',
+			axiom: 'Verification should reject unsupported claims while preserving answers that are correctly grounded, calculated, or explicitly uncertain.',
+			ruleOfThumb: 'Verification must distinguish between factual hallucinations and legitimate statements of document uncertainty or calculated results.'
 		},
-		technologies: ['FastAPI', 'React', 'Sentence Transformers', 'Cross-Encoders', 'Cosine Similarity', 'Python'],
-		projectReference: 'Architecture verified in Archiva (Self-Healing Agentic RAG Platform).'
+		technologies: ['Python', 'FastAPI', 'RAG', 'Reflection Checks'],
+		projectReference: 'Architecture verified in Archiva (Agentic RAG Platform).'
 	},
 
 	perception: {
@@ -133,53 +133,54 @@ export const SOLVE_CHAMBERS = {
 		id: 'uncertainty',
 		type: 'solve-chamber',
 		number: '03',
-		title: 'UNCERTAINTY',
-		theme: 'System Resilience & Self-Healing Architecture',
-		subtitle: 'Designing systems that adapt.',
-		inscription: 'FROM FAILURE TO STRONGER SYSTEMS',
-		quote: 'Failure is not the opposite of success; it is the calibration data.',
-		summary: 'Complex AI pipelines operate under inherent uncertainty: ambiguous queries, poor retrieval recall, and model drift. Truly robust systems build deterministic reflection loops and autonomous self-healing to continuously recover and improve.',
+		title: 'LATENCY & RELIABILITY UNDER LOAD',
+		theme: 'SYSTEM RELIABILITY',
+		subtitle: 'Keeping concurrent retrieval and model pipelines responsive.',
+		inscription: 'CONTROL THE FAILURE SURFACE',
+		quote: 'How do we keep an AI pipeline responsive when retrieval and model calls happen concurrently?',
+		summary: 'Under concurrent use, Archiva experienced Groq rate limits, stalled requests, and blocked application processing. Multiple retry layers increased latency, oversized context consumed token capacity, synchronous retrieval work blocked the event loop, and chat requests could remain open indefinitely.',
 		// Camera at Z=31 looking at Z=38 (+Z forward): -X is screen right
 		position: [-6.8, 0, 41.5],
 		accentColor: '#ffb45c',
 		secondaryColor: '#ffe0b2',
 		problem: {
-			title: 'Cascading Errors & Silent Degradation',
-			statement: 'In multi-step systems, an early failure (such as an ambiguous query or a miss in retrieval) silently cascades into downstream components, resulting in hallucinated outputs or broken state without triggering standard code exceptions.',
+			title: 'LATENCY & RELIABILITY UNDER LOAD',
+			statement: 'Under concurrent use, Archiva experienced Groq rate limits, stalled requests, and blocked application processing. Multiple retry layers increased latency, oversized context consumed token capacity, synchronous retrieval work blocked the event loop, and chat requests could remain open indefinitely.',
 			challenges: [
-				{ aspect: 'Silent Retrieval Misses', detail: 'When vector search returns off-topic documents, LLMs generate plausible but factually incorrect explanations.' },
-				{ aspect: 'Static Execution Paths', detail: 'Linear pipelines have no feedback mechanism to back out of a poor trajectory and try alternative strategies.' },
-				{ aspect: 'Boundary Case Drift', detail: 'Edge cases and unusual document structures cause inconsistent parsing behavior.' }
+				{ aspect: '1. STACKED RETRY BEHAVIOR', detail: 'Groq SDK retries combined with application-level retries and key rotation, increasing worst-case latency.' },
+				{ aspect: '2. OVERSIZED CONTEXT', detail: 'Parent chunks of roughly 5,900 tokens could exceed the intended 1,200-token context limit and contribute to token-limit failures.' },
+				{ aspect: '3. BLOCKED EVENT LOOP', detail: '/suggestions performed multiple retrieval and cross-encoder operations directly inside the coroutine.' },
+				{ aspect: '4. HUNG REQUESTS', detail: '/chat had no request timeout, allowing stalled requests to remain open.' }
 			]
 		},
 		investigation: {
-			keyQuestion: 'How can an autonomous system detect its own errors and self-heal before returning an answer?',
-			technicalAnalysis: 'We introduce deterministic verification barriers (reflection checks) after critical stages. If an output fails factual grounding, length, or semantic relevance checks, the controller diagnoses the root cause and triggers a corrective action loop (e.g. query rewriting, top-k expansion, or fallback synthesis).'
+			keyQuestion: 'How do we keep an AI pipeline responsive when retrieval and model calls happen concurrently?',
+			technicalAnalysis: "Under concurrent load, stacked retry layers across the Groq SDK, application logic, and key rotation multiplied worst-case request delays. Meanwhile, oversized parent chunks of ~5,900 tokens quickly exceeded the 1,200-token context boundary, synchronous retrieval and cross-encoder tasks blocked FastAPI's coroutine event loop, and missing request timeouts left unclosed chat connections."
 		},
 		transformation: {
-			from: 'FAILURE',
-			process: 'DETERMINISTIC REFLECTION',
-			to: 'STRONGER SYSTEM',
+			from: 'CONCURRENT BOTTLENECKS',
+			process: 'CONTROLLED EXECUTION',
+			to: 'BOUNDED LATENCY',
 			stages: [
-				{ label: 'EXECUTION ATTEMPT', input: 'Initial query & retrieval parameters', logic: 'Pipeline executes initial search and draft response synthesis.', output: 'Draft candidate output' },
-				{ label: 'DETERMINISTIC REFLECTION', input: 'Draft response + retrieved source chunks', logic: 'Rule-based verification verifies factual citation presence, length, and grounded claims.', output: 'Validation status & error diagnosis' },
-				{ label: 'CORRECTIVE SELF-HEALING', input: 'Diagnosed failure signature', logic: 'Autonomous corrective action: rewrite query, expand search threshold, or re-rank candidates.', output: 'Calibrated re-execution plan' },
-				{ label: 'STABILIZED RESOLUTION', input: 'Recovered pipeline execution', logic: 'Final synthesis confirmed against grounding invariants before delivery to user.', output: 'Resilient, verified result' }
+				{ label: 'RETRY & REQUEST CONTROL', input: 'Concurrent API requests', logic: 'Bound model retries and request execution so transient failures do not cascade into unnecessary latency.', output: 'Controlled model/retrieval execution' },
+				{ label: 'CONTEXT CONTROL', input: 'Retrieved parent document chunks', logic: 'Bound retrieved chunks so oversized parent content does not exceed the intended context limit.', output: 'Bounded prompt context' },
+				{ label: 'ASYNC EXECUTION', input: 'Concurrent search & cross-encoder operations', logic: 'Offload retrieval and cross-encoder operations from the main coroutine to keep the event loop responsive.', output: 'Non-blocking event loop' },
+				{ label: 'TIMEOUT & RECOVERY', input: 'Active API & chat connections', logic: 'Enforce explicit request timeouts so stalled connections terminate cleanly instead of remaining open indefinitely.', output: 'Controlled execution & recovery' }
 			]
 		},
 		pipeline: [
-			{ id: 'investigate', label: 'INVESTIGATE', detail: 'Deterministic checks inspect output grounding, numbers, and consistency.' },
-			{ id: 'diagnose', label: 'DIAGNOSE', detail: 'Isolate root cause: ambiguous query, low retrieval recall, or model drift.' },
-			{ id: 'adapt', label: 'ADAPT', detail: 'Execute corrective self-healing: rewrite query, expand top-k, or reingest.' },
-			{ id: 'validate', label: 'VALIDATE', detail: 'Verify the adapted output against strict truth and factual constraints.' }
+			{ id: 'request', label: 'RETRY & REQUEST CONTROL', detail: 'Bound model retries and request execution so transient failures do not cascade into unnecessary latency.' },
+			{ id: 'context', label: 'CONTEXT CONTROL', detail: 'Bound retrieved chunks so oversized parent content does not exceed the intended context limit.' },
+			{ id: 'async', label: 'ASYNC EXECUTION', detail: 'Offload retrieval and cross-encoder operations to keep the event loop responsive.' },
+			{ id: 'timeout', label: 'TIMEOUT & RECOVERY', detail: 'Enforce explicit request timeouts to terminate stalled connections cleanly.' }
 		],
 		engineeringPrinciple: {
-			name: 'Autonomous Self-Correction',
-			axiom: 'A system that assumes perfection will crash; a system that expects failure will endure.',
-			ruleOfThumb: 'Always insert deterministic reflection checkpoints after probabilistic model generation.'
+			name: 'CONTROL THE FAILURE SURFACE',
+			axiom: 'Reliability is not only about successful responses; it also requires bounded retries, controlled context size, non-blocking execution, and explicit timeouts.',
+			ruleOfThumb: 'Reliability requires bounded retries, controlled context size, non-blocking execution, and explicit timeouts.'
 		},
-		technologies: ['FastAPI', 'AsyncIO', 'Pydantic', 'Deterministic Guards', 'Python'],
-		projectReference: 'Foundational engineering methodology demonstrated across Archiva and production workflows.'
+		technologies: ['FastAPI', 'AsyncIO', 'Python', 'Groq', 'Cross-Encoder'],
+		projectReference: 'Architecture verified in Archiva (Agentic RAG Platform).'
 	}
 }
 

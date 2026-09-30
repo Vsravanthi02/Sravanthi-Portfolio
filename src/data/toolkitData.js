@@ -15,11 +15,11 @@ export const TOOLKIT_CORE = {
 	quote: 'The tools behind the systems.',
 	plinthInscription: 'VERIFIED TECHNICAL STACK',
 	description:
-		'The engineering toolchain powering production systems, research architectures, and enterprise AI migrations. Every technology listed has been verified in code, tested against benchmarks, and deployed in real workflows.',
+		'The engineering toolchain behind the AI systems, research projects, and enterprise workflows I have worked on. Every technology listed reflects hands-on experience across documented projects and engineering workflows.',
 	categoriesSummary: [
 		{ number: '01', name: 'AI / ML ENGINEERING', count: 11, accent: '#00d2ff' },
 		{ number: '02', name: 'GENERATIVE AI & RAG', count: 7, accent: '#35d8ff' },
-		{ number: '03', name: 'COMPUTER VISION', count: 7, accent: '#5fe2ff' },
+		{ number: '03', name: 'COMPUTER VISION', count: 5, accent: '#5fe2ff' },
 		{ number: '04', name: 'DATA & RETRIEVAL', count: 8, accent: '#ffb45c' },
 		{ number: '05', name: 'AI SYSTEMS & INFERENCE', count: 7, accent: '#00e5a3' },
 		{ number: '06', name: 'VISUALIZATION, BI & AUTOMATION', count: 5, accent: '#a993ff' },
@@ -113,7 +113,7 @@ export const TOOLKIT_STATIONS = {
 			{
 				project: 'Agentic Workflows',
 				context:
-					'Multi-turn agent tool execution via Model Context Protocol (MCP) servers for structured repository and filesystem inspection.',
+					'Multi-step MCP agent workflows that query MongoDB and PostgreSQL through connected tools to retrieve and synthesize relevant information.',
 			},
 			{
 				project: 'Archiva Document Q&A',
@@ -137,14 +137,12 @@ export const TOOLKIT_STATIONS = {
 		badge: 'PERCEPTION',
 		technologies: [
 			'OpenCV',
-			'YOLOv8',
-			'EasyOCR',
 			'DeepFace',
 			'MediaPipe',
 			'ViT',
 			'ResNet',
 		],
-		keyTechPills: ['OpenCV', 'YOLOv8', 'MediaPipe', 'DeepFace', 'EasyOCR'],
+		keyTechPills: ['OpenCV', 'DeepFace', 'MediaPipe', 'ViT', 'ResNet'],
 		summary:
 			'Real-time frame ingestion, bounding-box object detection, landmark estimation, optical character recognition, and vision transformer feature extraction.',
 		usedAcross: [
@@ -195,7 +193,7 @@ export const TOOLKIT_STATIONS = {
 			{
 				project: 'Archiva Hybrid Retrieval Engine',
 				context:
-					'BM25 keyword search fused with sentence-transformers dense embeddings using Reciprocal Rank Fusion (RRF), with relational PostgreSQL persistence and in-memory cosine similarity, paired with RDF/Turtle ontologies.',
+					'BM25 keyword search fused with sentence-transformer dense embeddings using Reciprocal Rank Fusion (RRF), with PostgreSQL persistence, application-side cosine similarity, and cross-encoder reranking.',
 			},
 			{
 				project: 'Quintesys Enterprise Migration',
@@ -284,17 +282,17 @@ export const TOOLKIT_STATIONS = {
 			{
 				project: 'Plotly',
 				context:
-					'Extended MCP-based AI agents with dynamic Plotly visualization generation, including bar, line, and pie charts, combining textual insights, tabular data, and graphical outputs for end users.',
+					'Extended MCP-based AI agents with dynamic Plotly visualization generation, including bar, line, and pie charts, enabling multimodal responses that combine textual insights, tabular data, and graphical outputs for end users.',
 			},
 			{
 				project: 'Power BI Desktop',
 				context:
-					'Desktop PBIR semantic modeling, report authoring, and DAX expression validation for enterprise analytics.',
+					'Power BI Desktop workflows involving PBIR semantic modeling, visual generation, PBIP-compatible visual definitions, and DAX expression validation.',
 			},
 			{
 				project: 'Power BI Paginated Reports',
 				context:
-					'Enterprise Cognos-to-Power BI conversion: Paginated RDL report authoring and pixel-perfect operational reporting.',
+					'Worked on Cognos-to-Power BI Paginated Reports workflows involving RDL report authoring, XML-based report processing, validation, and correction.',
 			},
 			{
 				project: 'Power Automate',

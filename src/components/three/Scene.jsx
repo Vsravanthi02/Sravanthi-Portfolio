@@ -75,9 +75,9 @@ function Scene({ enabled = true, mobileInput = [0, 0], mobileLook = [0, 0], mobi
 		}
 	}
 
-	// Spark, Build, Solve, and Engineer chapters share the continuous panoramic world vista and colonnade,
-	// so their far plane is wider (140) to preserve the distant horizons and monumental columns.
-	const isWideStage = activeDestination === 'home' || activeDestination === 'projects' || activeDestination === 'solve' || activeDestination === 'experience'
+	// Spark, Build, Solve, Engineer, Toolkit, and Person chapters share the continuous panoramic world vista,
+	// so their far plane is wider (140) to preserve the distant horizons and panoramic sunset.
+	const isWideStage = activeDestination === 'home' || activeDestination === 'projects' || activeDestination === 'solve' || activeDestination === 'experience' || activeDestination === 'skills' || activeDestination === 'about'
 	const fogFar = isWideStage ? 140 : 26
 	const fogNear = isWideStage ? 28 : 10
 	const fogColor = isWideStage ? '#1c2842' : '#0a0e16'

@@ -14,7 +14,8 @@ import SparkQuestionStation from './SparkQuestionStation'
 export default function SparkQuestionSpace({
 	playerPositionRef,
 	onSelectQuestion,
-	proximityRef
+	proximityRef,
+	onNavigate
 }) {
 	const stationProximities = useRef([0, 0, 0, 0])
 	const [activeStationIndex, setActiveStationIndex] = useState(-1)
