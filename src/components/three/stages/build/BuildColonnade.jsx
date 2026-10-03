@@ -101,9 +101,7 @@ export default function BuildColonnade() {
 				<meshBasicMaterial color="#ffb45c" toneMapped={false} transparent opacity={0.65} />
 			</mesh>
 
-			{/* Consolidated Warm Architectural Colonnade Uplights (replaces 8 individual column lights) */}
-			<pointLight position={[8.2, 1.2, 20.0]} color="#ffaa48" intensity={0.9} distance={12.0} decay={2} />
-			<pointLight position={[-8.2, 1.2, 20.0]} color="#ffaa48" intensity={0.9} distance={12.0} decay={2} />
+			{/* Consolidated Warm Architectural Colonnade Uplights (Managed via ChapterLightRig) */}
 
 			{/* ── 2. FLUTED ARCHITECTURAL COLUMNS ── */}
 			{COLUMN_POSITIONS.map((pos, idx) => (

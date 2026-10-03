@@ -241,8 +241,7 @@ function DestinationCapsule({
 				</group>
 			)}
 
-			{/* Capsule Accent Point Light */}
-			<pointLight ref={glowRef} position={[0, 0, 0.25]} color={accent} intensity={0.6} distance={2.0} decay={2} />
+			{/* Capsule Accent Point Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

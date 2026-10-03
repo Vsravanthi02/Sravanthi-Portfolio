@@ -75,8 +75,7 @@ export default function PersonStatementWall({ position = [-5.6, 0, 0.6], rotatio
 				</Text>
 			</group>
 
-			{/* Warm Architectural Grazing Light */}
-			<pointLight position={[0, 4.8, 0.6]} color="#ffb45c" intensity={1.5} distance={4.5} decay={2} />
+			{/* Warm Architectural Grazing Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

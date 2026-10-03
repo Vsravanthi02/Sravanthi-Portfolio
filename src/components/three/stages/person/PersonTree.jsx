@@ -225,13 +225,7 @@ export default function PersonTree({ position = [0, 0, 0] }) {
 				</group>
 			))}
 
-			{/* ── 5. WARM DEDICATED TREE ILLUMINATION ── */}
-			{/* Upward Golden Wash onto Trunk & Lower Canopy */}
-			<pointLight position={[0, 1.4, 0.8]} color="#ff9e3b" intensity={2.0} distance={6.0} decay={2} />
-			<pointLight position={[0, 2.6, -0.6]} color="#ffaa44" intensity={2.4} distance={6.5} decay={2} />
-
-			{/* Ambient Canopy Warmth */}
-			<pointLight position={[0, 4.5, 0]} color="#ffba55" intensity={1.8} distance={8.0} decay={2} />
+			{/* ── 5. WARM DEDICATED TREE ILLUMINATION (Managed via ChapterLightRig) */}
 
 			{/* ── 6. FLOATING GOLDEN POLLEN / FIREFLIES ── */}
 			<points ref={pollenRef}>

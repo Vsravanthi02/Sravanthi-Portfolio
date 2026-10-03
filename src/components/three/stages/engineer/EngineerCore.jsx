@@ -284,9 +284,7 @@ export default function EngineerCore({ center = [0, 0, 72.0], isNearby = false, 
 					})}
 				</group>
 
-				{/* Core Focal Light Emittance (Heroic focal glow) */}
-				<pointLight color="#35d8ff" intensity={2.2} distance={8.0} decay={2} />
-				<pointLight color="#ffb45c" intensity={1.8} distance={6.5} decay={2} />
+				{/* Core Focal Light Emittance (Managed via ChapterLightRig) */}
 			</group>
 
 			{/* ── 6. HERO QUINTESYS MONUMENTAL TYPOGRAPHY (Strongest Hierarchy) ── */}

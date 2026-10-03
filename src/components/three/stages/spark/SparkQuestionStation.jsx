@@ -222,15 +222,7 @@ export default function SparkQuestionStation({
 				))}
 			</group>
 
-			{/* ── 3. LOCALIZED REAL THREE.JS POINTLIGHT ── */}
-			<pointLight
-				ref={stationLightRef}
-				color={accentColor}
-				intensity={0.20}
-				distance={2.6}
-				position={[0, 0.70, 0]}
-				decay={2}
-			/>
+			{/* ── 3. LOCALIZED REAL THREE.JS POINTLIGHT (Managed via ChapterLightRig) */}
 
 			{/* ── 4. 3D SPATIAL TYPOGRAPHY (Matching Concept Image) ── */}
 			{/* Spatial Text Group: Positioned inward toward the central walkway */}

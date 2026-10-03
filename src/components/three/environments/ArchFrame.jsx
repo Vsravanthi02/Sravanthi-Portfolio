@@ -129,14 +129,7 @@ function ArchFrame({
 					<boxGeometry args={[0.08, 7.0, 0.02]} />
 					<meshBasicMaterial color={edgeColor} toneMapped={false} />
 				</mesh>
-				<pointLight
-					ref={anchorLightRef}
-					position={[2.8, 1.0, -3.8]}
-					color="#ffaa48"
-					intensity={0.44}
-					distance={6.0}
-					decay={2}
-				/>
+				{/* Anchor Light (Managed via ChapterLightRig) */}
 
 				{/* Heavy forward-projecting cantilevered observation deck */}
 				<mesh position={[-0.8, 4.4, -2.4]} castShadow receiveShadow>
@@ -233,23 +226,7 @@ function ArchFrame({
 					<meshStandardMaterial {...darkMat} side={THREE.BackSide} />
 				</mesh>
 
-				{/* REAL THREE.JS WARM POINTLIGHTS inside tunnel illuminating stone curve */}
-				<pointLight
-					ref={tunnelLightLeftRef}
-					position={[-radius * 0.60, portalCY - 0.6, tunnelDepth * 0.42]}
-					color="#ffaa48"
-					intensity={0.58}
-					distance={6.5}
-					decay={2}
-				/>
-				<pointLight
-					ref={tunnelLightRightRef}
-					position={[radius * 0.60, portalCY - 0.6, tunnelDepth * 0.42]}
-					color="#ffaa48"
-					intensity={0.58}
-					distance={6.5}
-					decay={2}
-				/>
+				{/* REAL THREE.JS WARM POINTLIGHTS inside tunnel (Managed via ChapterLightRig) */}
 
 				{/* Walkable Central Stone Bridge extending through the portal threshold */}
 				<group position={[0, 0.04, tunnelDepth / 2]}>
@@ -388,15 +365,7 @@ function ArchFrame({
 					</group>
 				</group>
 
-				{/* REAL THREE.JS DOWNLIGHT casting warm wash over screen-left negative space */}
-				<pointLight
-					ref={canopyDownlightRef}
-					position={[5.5, -1.4, -1.8]}
-					color="#ffaa48"
-					intensity={0.52}
-					distance={9.0}
-					decay={2}
-				/>
+				{/* REAL THREE.JS DOWNLIGHT (Managed via ChapterLightRig) */}
 
 				{/* Secondary upper stepped aerodynamic fin on the canopy */}
 				<mesh position={[-4.0, 0.65, 0.4]} castShadow receiveShadow>

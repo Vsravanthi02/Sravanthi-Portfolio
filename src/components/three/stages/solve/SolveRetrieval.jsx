@@ -110,7 +110,6 @@ function NoiseToSignalField({ proximityRef }) {
 					<planeGeometry args={[0.92, 1.42]} />
 					<meshBasicMaterial color="#6fe7ff" wireframe transparent opacity={0.4} toneMapped={false} />
 				</mesh>
-				<pointLight color="#35d8ff" intensity={0.9} distance={3.8} position={[0.1, 0, 0]} decay={2} />
 			</group>
 
 			{/* 3. Right-Side Converging Filaments into Insight Core */}
@@ -129,7 +128,6 @@ function NoiseToSignalField({ proximityRef }) {
 					<icosahedronGeometry args={[1, 0]} />
 					<meshBasicMaterial color="#ffffff" transparent opacity={0.95} toneMapped={false} />
 				</mesh>
-				<pointLight color="#ffb45c" intensity={1.1} distance={4.0} decay={2} />
 			</group>
 
 			{/* 4. Stream Particles */}
@@ -340,15 +338,7 @@ export default function SolveRetrieval({ playerPositionRef, onSelect }) {
 				})}
 			</group>
 
-			{/* ── 6. REAL THREE.JS POINTLIGHT ── */}
-			<pointLight
-				ref={lightRef}
-				color={accentColor}
-				intensity={0.45}
-				distance={5.0}
-				position={[0, 2.0, 0.8]}
-				decay={2}
-			/>
+			{/* ── 6. REAL THREE.JS POINTLIGHT (Managed via ChapterLightRig) */}
 
 			{/* Interactive Click / E Cue */}
 			<group position={[0, 0.38, 2.2]}>

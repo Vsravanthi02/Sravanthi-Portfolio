@@ -82,14 +82,7 @@ export default function ToolkitStation({
 				<meshBasicMaterial transparent opacity={0} depthWrite={false} />
 			</mesh>
 
-			{/* Dedicated architectural station glow */}
-			<pointLight
-				color={accentColor}
-				intensity={active ? 2.4 : 1.4}
-				distance={3.8}
-				decay={2}
-				position={[0, 1.2, 0.4]}
-			/>
+			{/* Dedicated architectural station glow (Managed via ChapterLightRig) */}
 
 			{/* ── 1. CIRCULAR BASE PLINTH ── */}
 			{/* Lower Tier */}

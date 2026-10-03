@@ -353,12 +353,7 @@ function CentralReasoningCore({ proximityRef, loopState }) {
 					</mesh>
 				</group>
 
-				<pointLight
-					color={isHealing ? '#ffb45c' : '#35d8ff'}
-					intensity={1.2}
-					distance={4.8}
-					decay={2}
-				/>
+				{/* Core Light (Managed via ChapterLightRig) */}
 			</group>
 
 			{/* REASON Label below core */}
@@ -821,15 +816,7 @@ export default function BuildArchiva({ playerPositionRef, onSelect }) {
 				<PipelineDataPackets speedMultiplier={1.0 + (proximityRef.current || 0) * 1.8} />
 			</group>
 
-			{/* ── 6. REAL THREE.JS POINTLIGHT ── */}
-			<pointLight
-				ref={lightRef}
-				color={loopState === 'heal' ? '#ffb45c' : accentColor}
-				intensity={0.45}
-				distance={4.8}
-				position={[0, 1.8, 0.8]}
-				decay={2}
-			/>
+			{/* ── 6. REAL THREE.JS POINTLIGHT (Managed via ChapterLightRig) */}
 
 			{/* Interactive Click / E Cue */}
 			<group position={[0, 0.38, 2.2]}>

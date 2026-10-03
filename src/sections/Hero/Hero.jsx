@@ -50,9 +50,7 @@ function Hero() {
 		setActiveTarget(null)
 		previousDestinationRef.current = activeDestinationRef.current
 		const stageId = destination.stageId || destination.id
-		setActiveDestination(stageId)
-		activeDestinationRef.current = stageId
-		setNavigationTarget({ ...destination, requestId: `${id}-${Date.now()}` })
+		setNavigationTarget({ ...destination, stageId, requestId: `${id}-${Date.now()}` })
 	}, [])
 	useEffect(() => {
 		const handleHashChange = () => {
@@ -65,7 +63,13 @@ function Hero() {
 		}
 		window.addEventListener('hashchange', handleHashChange)
 		const initialId = window.location.hash.slice(1) || 'home'
-		if (destinationById[initialId]) requestDestination(initialId)
+		if (destinationById[initialId]) {
+			const dest = destinationById[initialId]
+			const stageId = dest.stageId || dest.id
+			setActiveDestination(stageId)
+			activeDestinationRef.current = stageId
+			requestDestination(initialId)
+		}
 		return () => window.removeEventListener('hashchange', handleHashChange)
 	}, [requestDestination])
 	const handleNavigationClick = useCallback((id) => {
@@ -139,7 +143,7 @@ function Hero() {
 	const titlingHidden = isLocked || isExploring || activeDestination !== 'home'
 	return (
 		<section className="hero" id="home">
-			<HeroScene enabled={worldEnabled} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onLockChange={setIsLocked} onNavigationState={handleNavigationState} onNearby={setNearby} onInteract={handleInteraction} onPositionChange={handlePositionChange} onCameraModeChange={setCameraMode} selectedStateId={activeTarget?.type === 'state' ? activeTarget.id : null} activeDestination={activeDestination} onExplorationChange={setIsExploring} onNavigate={handleNavigationClick} />
+			<HeroScene enabled={worldEnabled && !activeTarget} mobileInput={mobileInput} mobileLook={mobileLook} mobilePinchDistance={mobilePinchDistance} navigationTarget={navigationTarget} onLockChange={setIsLocked} onNavigationState={handleNavigationState} onNearby={setNearby} onInteract={handleInteraction} onPositionChange={handlePositionChange} onCameraModeChange={setCameraMode} selectedStateId={activeTarget?.type === 'state' ? activeTarget.id : null} activeDestination={activeDestination} onExplorationChange={setIsExploring} onNavigate={handleNavigationClick} />
 			<div className="hero-overlay">
 				<motion.div className={titlingHidden ? 'hero-actions-bar is-hidden' : 'hero-actions-bar'} initial={{ opacity: 0 }} animate={titlingHidden ? { opacity: 0 } : { opacity: 1 }} transition={{ duration: 0.7, delay: 0.15 }} style={{ pointerEvents: titlingHidden ? 'none' : 'auto' }}>
 					<div className="hero-actions">

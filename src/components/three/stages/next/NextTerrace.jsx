@@ -32,8 +32,7 @@ function FloorLantern({ position }) {
 				<cylinderGeometry args={[0.11, 0.08, 0.04, 16]} />
 				<meshStandardMaterial color="#111620" metalness={0.8} roughness={0.3} />
 			</mesh>
-			{/* Warm Amber Point Light */}
-			<pointLight position={[0, 0.25, 0]} color="#ffaa44" intensity={0.9} distance={2.2} decay={2} />
+			{/* Warm Amber Point Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }
@@ -102,8 +101,7 @@ export default function NextTerrace() {
 					<boxGeometry args={[1.82, 0.12, 0.65]} />
 					<meshStandardMaterial color="#2d3748" roughness={0.9} />
 				</mesh>
-				{/* Warm Under-wash Light */}
-				<pointLight position={[0, 0.15, 0.2]} color="#ffaa44" intensity={0.6} distance={1.8} />
+				{/* Warm Under-wash Light (Managed via ChapterLightRig) */}
 			</group>
 
 			{/* ── 5. FOREGROUND PLINTH: "SAME CURIOSITY. BIGGER OPPORTUNITIES." ── */}

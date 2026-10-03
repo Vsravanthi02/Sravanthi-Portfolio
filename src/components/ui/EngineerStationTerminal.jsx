@@ -233,10 +233,10 @@ export default function EngineerStationTerminal({ station, onClose, onNavigate }
 						<div style={{ marginTop: '1.3rem' }}>
 							<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.55rem' }}>
 								<span style={{ fontSize: '0.72rem', letterSpacing: '0.14em', color: '#90a8c2', textTransform: 'uppercase', fontFamily: 'monospace' }}>
-									PRODUCTION PIPELINE
+									ENGINEERING WORKFLOW
 								</span>
 								<span style={{ fontSize: '0.62rem', color: '#88a2ba', fontFamily: 'monospace' }}>
-									{pipeline.length} STAGES{!isCognosStation ? ' • CLICK TO INSPECT' : ''}
+									{pipeline.length} STAGES{pipeline.some((s) => s.detail) ? ' • CLICK TO INSPECT' : ''}
 								</span>
 							</div>
 
@@ -279,7 +279,7 @@ export default function EngineerStationTerminal({ station, onClose, onNavigate }
 								})}
 							</div>
 
-							{!isCognosStation && pipeline[activeStepIndex] && pipeline[activeStepIndex].detail && (
+							{pipeline.some((s) => s.detail) && pipeline[activeStepIndex] && pipeline[activeStepIndex].detail && (
 								<div
 									style={{
 										marginTop: '0.5rem',

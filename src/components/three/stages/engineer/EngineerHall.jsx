@@ -37,6 +37,14 @@ export default function EngineerHall({ onNavigate, center = [0, 0, 72.0] }) {
 		return cols
 	}, [cx, cz, columnCount, columnRadius])
 
+	const columnMaterials = useMemo(() => ({
+		plinth: new THREE.MeshStandardMaterial({ color: '#1a222e', roughness: 0.78, metalness: 0.12 }),
+		ring: new THREE.MeshStandardMaterial({ color: '#253040', roughness: 0.7, metalness: 0.2 }),
+		shaft: new THREE.MeshStandardMaterial({ color: '#202a38', roughness: 0.72, metalness: 0.15 }),
+		fixture: new THREE.MeshStandardMaterial({ color: '#0c121c' }),
+		sconce: new THREE.MeshBasicMaterial({ color: '#ffb45c', toneMapped: false }),
+	}), [])
+
 	return (
 		<group position={[0, 0, 0]}>
 			{/* ── 1. MAIN OBSERVATORY FLOOR ── */}
@@ -66,46 +74,37 @@ export default function EngineerHall({ onNavigate, center = [0, 0, 72.0] }) {
 			{columns.map((col, idx) => (
 				<group key={idx} position={[col.x, 0, col.z]} rotation={[0, col.angle - Math.PI / 2, 0]}>
 					{/* Column Base Plinth & Ring */}
-					<mesh position={[0, 0.35, 0]}>
+					<mesh position={[0, 0.35, 0]} material={columnMaterials.plinth}>
 						<cylinderGeometry args={[0.72, 0.85, 0.70, 24]} />
-						<meshStandardMaterial color="#1a222e" roughness={0.78} metalness={0.12} />
 					</mesh>
-					<mesh position={[0, 0.70, 0]}>
+					<mesh position={[0, 0.70, 0]} material={columnMaterials.ring}>
 						<torusGeometry args={[0.66, 0.06, 12, 24]} />
-						<meshStandardMaterial color="#253040" roughness={0.7} metalness={0.2} />
 					</mesh>
 
 					{/* Fluted Column Shaft */}
-					<mesh position={[0, 4.2, 0]}>
+					<mesh position={[0, 4.2, 0]} material={columnMaterials.shaft}>
 						<cylinderGeometry args={[0.60, 0.68, 7.0, 24]} />
-						<meshStandardMaterial color="#202a38" roughness={0.72} metalness={0.15} />
 					</mesh>
 
 					{/* Column Capital & Molding */}
-					<mesh position={[0, 7.65, 0]}>
+					<mesh position={[0, 7.65, 0]} material={columnMaterials.ring}>
 						<torusGeometry args={[0.64, 0.06, 12, 24]} />
-						<meshStandardMaterial color="#253040" roughness={0.7} metalness={0.2} />
 					</mesh>
-					<mesh position={[0, 7.85, 0]}>
+					<mesh position={[0, 7.85, 0]} material={columnMaterials.plinth}>
 						<cylinderGeometry args={[0.85, 0.62, 0.5, 24]} />
-						<meshStandardMaterial color="#1a222e" roughness={0.78} metalness={0.12} />
 					</mesh>
 
 					{/* Architectural Sconce Light Fixture (Facing Inward) */}
-					<mesh position={[0, 3.2, 0.65]}>
+					<mesh position={[0, 3.2, 0.65]} material={columnMaterials.fixture}>
 						<boxGeometry args={[0.16, 0.42, 0.08]} />
-						<meshStandardMaterial color="#0c121c" />
 					</mesh>
-					<mesh position={[0, 3.2, 0.70]}>
+					<mesh position={[0, 3.2, 0.70]} material={columnMaterials.sconce}>
 						<planeGeometry args={[0.12, 0.36]} />
-						<meshBasicMaterial color="#ffb45c" toneMapped={false} />
 					</mesh>
 				</group>
 			))}
 
-			{/* Consolidated Warm Engineer Hall Atmosphere Lights (replaces 6 individual column lights) */}
-			<pointLight position={[cx - 7.5, 3.6, cz + 2.0]} color="#ffb45c" intensity={1.1} distance={15.0} decay={2} />
-			<pointLight position={[cx + 7.5, 3.6, cz + 2.0]} color="#ffb45c" intensity={1.1} distance={15.0} decay={2} />
+			{/* Consolidated Warm Engineer Hall Atmosphere Lights (Managed via ChapterLightRig) */}
 
 			{/* Upper Monumental Arch Entablature Ring */}
 			<mesh position={[cx, 8.1, cz]}>

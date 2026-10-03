@@ -67,9 +67,7 @@ export default function NextGlobe({
 				<meshBasicMaterial color="#00d2ff" transparent opacity={0.35} toneMapped={false} />
 			</mesh>
 
-			{/* Upward Hologram Projector Light */}
-			<pointLight position={[0, 0.5, 0]} color="#00d2ff" intensity={2.2} distance={3.5} decay={2} />
-			<pointLight position={[0, 1.3, 0]} color="#a855f7" intensity={1.2} distance={3.0} decay={2} />
+			{/* Upward Hologram Projector Light (Managed via ChapterLightRig) */}
 
 			{/* ── 2. LUMINOUS WORLD GLOBE (SPHERE) ── */}
 			<group ref={innerSphereRef} position={[0, 1.30, 0]}>

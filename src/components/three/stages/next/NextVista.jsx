@@ -78,12 +78,10 @@ export default function NextVista({ position = [0, 0, 6.8] }) {
 				<group position={[-2.2, -0.5, 0]}>
 					<mesh position={[0, 0.25, 0]}><cylinderGeometry args={[0.012, 0.012, 0.5, 8]} /><meshBasicMaterial color="#111" /></mesh>
 					<mesh><cylinderGeometry args={[0.15, 0.18, 0.25, 16]} /><meshStandardMaterial color="#201815" metalness={0.6} /></mesh>
-					<pointLight color="#ffaa44" intensity={0.9} distance={2.8} />
 				</group>
 				<group position={[2.2, -0.5, 0]}>
 					<mesh position={[0, 0.25, 0]}><cylinderGeometry args={[0.012, 0.012, 0.5, 8]} /><meshBasicMaterial color="#111" /></mesh>
 					<mesh><cylinderGeometry args={[0.15, 0.18, 0.25, 16]} /><meshStandardMaterial color="#201815" metalness={0.6} /></mesh>
-					<pointLight color="#ffaa44" intensity={0.9} distance={2.8} />
 				</group>
 			</group>
 
@@ -107,8 +105,7 @@ export default function NextVista({ position = [0, 0, 6.8] }) {
 					<meshBasicMaterial color="#ff5e36" transparent opacity={0.32} toneMapped={false} />
 				</mesh>
 
-				{/* Direct Sunset Backlight Point Source */}
-				<pointLight color="#ffaa55" intensity={2.8} distance={20} decay={1.8} />
+				{/* Direct Sunset Backlight Point Source (Managed via ChapterLightRig) */}
 			</group>
 
 			{/* ── 3. REFLECTIVE WATER PLANE (BEHIND ARCH) ── */}

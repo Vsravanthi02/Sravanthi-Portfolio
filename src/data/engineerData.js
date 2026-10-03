@@ -42,7 +42,7 @@ export const QUINTESYS_EXPERIENCE = {
 		{
 			id: 'software',
 			title: 'Software Engineering',
-			detail: 'Python backend development, Pytest test suites, Streamlit tools, Azure VM debugging, and container compatibility investigation.'
+			detail: 'Python backend development, Pytest test suites, Streamlit application maintenance, Azure VM debugging, and container compatibility investigation.'
 		}
 	],
 	cognosAutomation: {
@@ -72,26 +72,37 @@ export const QUINTESYS_EXPERIENCE = {
 				'Schema Validation',
 				'Desktop Rendering'
 			],
-			summary: 'Converting Cognos reports and models into Power BI Desktop visualizations, utilizing fine-tuned models for PBIP visualContainer JSON and rendering validation.'
+			summary: 'Power BI Desktop visual-generation and validation workflows, generating PBIP visualContainer JSON, and evaluating through Power BI Desktop rendering tests.'
 		}
 	},
 	genaiEngineering: {
 		title: 'LLM / GENAI ENGINEERING',
 		pipeline: [
-			'Training Data Curation',
+			'Training Data',
 			'QLoRA Fine-Tuning',
-			'Qwen2.5-Coder',
 			'Prompt Testing',
-			'Model Comparison',
-			'Output Validation'
+			'Model Evaluation',
+			'Output Evaluation',
+			'Structured Validation'
 		],
-		summary: 'Fine-tuned Qwen2.5-Coder-7B-Instruct with QLoRA on 1,059 schema-annotated samples for PBIP visualContainer JSON, evaluating against Claude Sonnet 4.6 across Power BI Desktop rendering tests.',
-		technologies: ['Qwen2.5-Coder-7B-Instruct', 'QLoRA', 'PyTorch', 'Transformers', 'Evaluation', 'Validation']
+		summary: 'Fine-tuned Qwen2.5-Coder-7B-Instruct with QLoRA on schema-annotated training data to generate PBIP-compatible visualContainer JSON, evaluating through prompt testing, model evaluation, and structured validation.',
+		technologies: [
+			'Qwen2.5-Coder-7B-Instruct',
+			'QLoRA',
+			'PyTorch',
+			'Transformers',
+			'PEFT',
+			'BitsAndBytes',
+			'Accelerate',
+			'Azure ML',
+			'MLflow',
+			'Python'
+		]
 	},
 	softwareEngineering: {
 		title: 'SOFTWARE ENGINEERING PRACTICE',
-		summary: 'Applied software engineering practices including Python backend development, FastAPI and gRPC APIs, Pytest test suites, Streamlit tooling, Azure VM debugging, and Docker compatibility investigation.',
-		technologies: ['Python', 'FastAPI', 'gRPC', 'Pytest', 'Streamlit', 'Azure VMs', 'Git']
+		summary: 'Applied software engineering practices including Python backend development, FastAPI and gRPC APIs, Pytest test suites, Streamlit application maintenance, Azure VM debugging, and Docker compatibility investigation.',
+		technologies: ['Python', 'FastAPI', 'gRPC', 'Pytest', 'Streamlit', 'Azure VMs', 'Docker', 'Git']
 	}
 }
 
@@ -189,14 +200,14 @@ export const ENGINEER_STATIONS = {
 		keywords: 'MODEL • VISUALS • PBIP',
 		inscription: 'VISUAL GENERATION',
 		quote: 'Generating and evaluating PBIP visualContainer JSON definitions for Power BI Desktop visualizations.',
-		whyItMatters: 'Focused on the Power BI Desktop, data model, and visual generation side of migration. Extracted Cognos metadata and dataset logic, translated legacy chart definitions to Power BI core visual primitives, and fine-tuned Qwen2.5-Coder-7B-Instruct with QLoRA across 1,059 schema-annotated samples to generate PBIP-compatible visualContainer JSON. Evaluated generated visual definitions through Power BI Desktop rendering tests, achieving 9/10 successful renderings on held-out visual prompts compared to 6/10 for Claude Sonnet 4.6.',
+		whyItMatters: 'Worked on the Power BI Desktop visual-generation and validation side of Cognos-to-Power BI workflows. Extracted report and model metadata, mapped legacy chart definitions to Power BI visual types, generated PBIP-compatible visualContainer JSON, and evaluated the generated visual definitions through Power BI Desktop rendering tests.',
 		pipeline: [
-			{ id: 'model', label: 'Model Extraction' },
-			{ id: 'dataset', label: 'Dataset & Schema' },
-			{ id: 'mapping', label: 'Visual Mapping' },
-			{ id: 'pbip', label: 'PBIP / Visual JSON' },
-			{ id: 'val', label: 'Schema Validation' },
-			{ id: 'desktop', label: 'Desktop Rendering' }
+			{ id: 'model', label: 'MODEL EXTRACTION' },
+			{ id: 'dataset', label: 'DATASET & SCHEMA' },
+			{ id: 'mapping', label: 'VISUAL MAPPING' },
+			{ id: 'pbip', label: 'PBIP / VISUAL JSON' },
+			{ id: 'val', label: 'SCHEMA VALIDATION' },
+			{ id: 'desktop', label: 'DESKTOP RENDERING' }
 		],
 		accentColor: '#35d8ff',
 		secondaryColor: '#69e3ff',
@@ -214,18 +225,29 @@ export const ENGINEER_STATIONS = {
 		keywords: 'FINE-TUNING • QWEN • EVALUATION',
 		inscription: 'QLoRA & EVALUATION',
 		quote: 'Fine-tuning, prompt testing, and systematically evaluating open-weights coding models for structured configuration generation.',
-		whyItMatters: 'General-purpose LLMs frequently produce syntax errors or invalid schemas when generating domain-specific BI configurations. Applied QLoRA fine-tuning to Qwen2.5-Coder-7B-Instruct on 1,059 schema-annotated training samples, combined with prompt engineering and structured output validation. Systematically benchmarked and evaluated generated outputs against general-purpose LLMs across targeted code and visual generation test suites.',
+		whyItMatters: 'Fine-tuned Qwen2.5-Coder-7B-Instruct with QLoRA on schema-annotated training data to generate PBIP-compatible visualContainer JSON for Power BI visual generation. Used prompt testing, structured validation, and output evaluation to assess generated visual definitions.',
 		pipeline: [
-			{ id: 'prep', label: 'Training Data Curation', detail: 'Curating, tokenizing, and formatting 1,059 schema-annotated training pairs.' },
-			{ id: 'qlora', label: 'QLoRA Fine-Tuning', detail: 'Applying parameter-efficient 4-bit low-rank adaptation to Qwen2.5-Coder-7B-Instruct.' },
-			{ id: 'prompt', label: 'Prompt Engineering', detail: 'Designing structured prompts and schema constraints to guide model generation.' },
-			{ id: 'compare', label: 'Model Comparison', detail: 'Evaluating fine-tuned models against general-purpose LLMs on identical test prompts.' },
-			{ id: 'eval', label: 'Output Evaluation', detail: 'Benchmarking generated code and configurations for syntax and schema compliance.' },
-			{ id: 'norm', label: 'Structured Validation', detail: 'Validating and normalizing generated outputs with deterministic parsers and linters.' }
+			{ id: 'data', label: 'TRAINING DATA' },
+			{ id: 'qlora', label: 'QLoRA FINE-TUNING' },
+			{ id: 'prompt', label: 'PROMPT TESTING' },
+			{ id: 'model_eval', label: 'MODEL EVALUATION' },
+			{ id: 'output_eval', label: 'OUTPUT EVALUATION' },
+			{ id: 'validation', label: 'STRUCTURED VALIDATION' }
 		],
 		accentColor: '#a993ff',
 		secondaryColor: '#c4b5fd',
-		technologies: ['Qwen2.5-Coder-7B-Instruct', 'QLoRA', 'PyTorch', 'Transformers', 'Prompt Engineering', 'Schema Validation']
+		technologies: [
+			'Qwen2.5-Coder-7B-Instruct',
+			'QLoRA',
+			'PyTorch',
+			'Transformers',
+			'PEFT',
+			'BitsAndBytes',
+			'Accelerate',
+			'Azure ML',
+			'MLflow',
+			'Python'
+		]
 	},
 
 	aiSystems: {
@@ -238,15 +260,15 @@ export const ENGINEER_STATIONS = {
 		tag: 'QUINTESYS WORK',
 		keywords: 'APIS • MCP • WORKFLOWS',
 		inscription: 'SYSTEM INTEGRATION',
-		quote: 'Integrating model inference workflows, semantic search, MCP agent tools, and dynamic visualization into backend systems.',
-		whyItMatters: 'Applied AI systems engineering to connect inference workflows into backend services. Developed FastAPI and gRPC service integrations, tracked experiments and artifacts with MLflow, implemented tool-driven MCP agent workflows that reason over live data to generate dynamic Plotly visualizations, and integrated PostgreSQL workflows and semantic search for retrieval tasks.',
+		quote: 'Working across model inference, semantic search, MCP tooling, and dynamic visualization for AI-powered systems.',
+		whyItMatters: 'Integrated AI inference workflows with backend services, experiment tracking, tool-driven MCP agents, dynamic Plotly visualization, and PostgreSQL-based data workflows.',
 		pipeline: [
-			{ id: 'inference', label: 'Inference Workflows', detail: 'Serving model inference through asynchronous FastAPI and gRPC service endpoints.' },
-			{ id: 'mlflow', label: 'MLflow Tracking', detail: 'Logging experiments, model artifacts, and version configurations with MLflow.' },
-			{ id: 'mcp', label: 'MCP Agent Layer', detail: 'Implementing Model Context Protocol tools and agent orchestration workflows.' },
-			{ id: 'viz', label: 'Dynamic Visualization', detail: 'Generating dynamic Plotly charts from agent tool reasoning over query outputs.' },
-			{ id: 'search', label: 'Semantic Search', detail: 'Integrating semantic retrieval workflows with PostgreSQL for knowledge access.' },
-			{ id: 'val', label: 'Service Validation', detail: 'Applying Pydantic contract validation, timeout budgets, and structured exception handling.' }
+			{ id: 'inference', label: 'INFERENCE SERVICES' },
+			{ id: 'tracking', label: 'EXPERIMENT TRACKING' },
+			{ id: 'mcp', label: 'MCP TOOL ORCHESTRATION' },
+			{ id: 'viz', label: 'DYNAMIC VISUALIZATION' },
+			{ id: 'data', label: 'DATA & RETRIEVAL' },
+			{ id: 'integration', label: 'SYSTEM INTEGRATION' }
 		],
 		accentColor: '#6fe7ff',
 		secondaryColor: '#35d8ff',
@@ -263,19 +285,19 @@ export const ENGINEER_STATIONS = {
 		tag: 'QUINTESYS WORK',
 		keywords: 'PYTHON • APIS • TESTING',
 		inscription: 'SOFTWARE PRACTICE',
-		quote: 'Writing modular Python services, integrating APIs, writing automated tests, and debugging across cloud environments.',
-		whyItMatters: 'Software engineering practice at Quintesys centered on building reliable backend components and integration tools in Python. Developed modular API services with FastAPI and gRPC, created interactive internal tools with Streamlit, maintained automated test suites with Pytest, investigated container environment compatibility with Docker, and debugged inference workflows on Azure VMs.',
+		quote: 'Building Python services, integrating APIs, maintaining tests, and investigating applications across cloud environments.',
+		whyItMatters: 'Worked on Python backend components and API integrations using FastAPI and gRPC, refactored and maintained existing Streamlit applications, maintained automated tests with Pytest, investigated container compatibility with Docker, and debugged inference workflows on Azure VMs.',
 		pipeline: [
-			{ id: 'python', label: 'Python Backend', detail: 'Developing modular, well-typed Python service layers, data utilities, and routers.' },
-			{ id: 'apis', label: 'API Integration', detail: 'Implementing and testing REST and gRPC interfaces for enterprise automation flows.' },
-			{ id: 'streamlit', label: 'Streamlit Tooling', detail: 'Building interactive internal testing and demonstration interfaces.' },
-			{ id: 'testing', label: 'Pytest Test Suites', detail: 'Writing unit and integration tests to validate data transformations and API behavior.' },
-			{ id: 'azure', label: 'Azure VM Environments', detail: 'Deploying, testing, and debugging service components across Azure virtual machines.' },
-			{ id: 'docker', label: 'Docker Investigation', detail: 'Investigating container runtime compatibility and environment configuration.' }
+			{ id: 'python', label: 'PYTHON BACKEND' },
+			{ id: 'apis', label: 'API INTEGRATION' },
+			{ id: 'streamlit', label: 'STREAMLIT MAINTENANCE' },
+			{ id: 'testing', label: 'PYTEST TESTING' },
+			{ id: 'azure', label: 'AZURE VM ENVIRONMENTS' },
+			{ id: 'docker', label: 'DOCKER INVESTIGATION' }
 		],
 		accentColor: '#ffb45c',
 		secondaryColor: '#ffd699',
-		technologies: ['Python', 'FastAPI', 'gRPC', 'Pytest', 'Streamlit', 'Azure VMs', 'Docker (Investigation)', 'Git']
+		technologies: ['Python', 'FastAPI', 'gRPC', 'Pytest', 'Streamlit', 'Azure VMs', 'Docker', 'Git']
 	}
 }
 

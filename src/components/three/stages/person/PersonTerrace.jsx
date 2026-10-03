@@ -170,10 +170,7 @@ export default function PersonTerrace() {
 				</mesh>
 			</group>
 
-			{/* Balanced Warm Ground Atmosphere Lights */}
-			<pointLight position={[0, 1.2, -0.6]} color="#ffaa44" intensity={1.5} distance={7.5} decay={2} />
-			<pointLight position={[-4.5, 0.8, 1.0]} color="#ff9933" intensity={1.1} distance={6.0} decay={2} />
-			<pointLight position={[4.5, 0.8, 1.0]} color="#ff9933" intensity={1.1} distance={6.0} decay={2} />
+			{/* Balanced Warm Ground Atmosphere Lights (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

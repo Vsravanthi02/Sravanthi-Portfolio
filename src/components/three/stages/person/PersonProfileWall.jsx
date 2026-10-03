@@ -255,8 +255,7 @@ export default function PersonProfileWall({ position = [5.6, 0, 0.6], rotation =
 				</group>
 			</group>
 
-			{/* Soft Downward Grazing Light over Portrait Frame */}
-			<pointLight position={[0, 5.0, 0.6]} color="#a8ddff" intensity={1.4} distance={4.5} decay={2} />
+			{/* Soft Downward Grazing Light over Portrait Frame (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

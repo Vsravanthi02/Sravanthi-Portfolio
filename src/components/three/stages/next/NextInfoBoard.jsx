@@ -435,8 +435,7 @@ export default function NextInfoBoard({
 				</group>
 			)}
 
-			{/* Accent Point Light */}
-			<pointLight ref={glowRef} position={[0, 2.85, 0.8]} color="#00d2ff" intensity={0.8} distance={4.5} decay={2} />
+			{/* Accent Point Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

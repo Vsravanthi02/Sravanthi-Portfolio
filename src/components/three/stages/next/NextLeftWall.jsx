@@ -111,8 +111,7 @@ export default function NextLeftWall({
 				</Text>
 			</group>
 
-			{/* Soft Downward Wall Grazing Light */}
-			<pointLight position={[0, 4.8, 0.6]} color="#a78bfa" intensity={1.2} distance={4.0} decay={2} />
+			{/* Soft Downward Wall Grazing Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

@@ -160,14 +160,7 @@ export default function SolveCore() {
 			})}
 
 			{/* ── 4. DATA PARTICLES & SOFT CORE LIGHT ── */}
-			<AscendingCoreParticles />
-			<pointLight
-				position={[0, 0.8, 0]}
-				color="#35d8ff"
-				intensity={0.65}
-				distance={5.5}
-				decay={2}
-			/>
+			{/* Soft Core Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

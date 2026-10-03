@@ -150,6 +150,7 @@ destinationById['aiSystems'] = {
 destinationById['ai-systems'] = destinationById['aiSystems']
 
 // Aliases for stage navigation & compatibility
+destinationById['spark'] = destinationById['home']
 destinationById['next'] = destinationById['contact']
 destinationById['engineer'] = destinationById['experience']
 destinationById['toolkit'] = destinationById['skills']

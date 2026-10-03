@@ -134,6 +134,14 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 		return () => document.removeEventListener('keydown', cancelNavigation)
 	}, [onNavigationState])
 
+	useEffect(() => {
+		if (!enabled) {
+			velocity.current = [0, 0]
+			speed.current = 0
+			characterMotionRef.current = { speed: 0, forward: 0, strafe: 0, sprint: false }
+		}
+	}, [enabled])
+
 	const dampAngle = (current, target, amount) => {
 		const difference = Math.atan2(Math.sin(target - current), Math.cos(target - current))
 		return current + difference * amount

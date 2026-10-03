@@ -264,15 +264,7 @@ export default function SparkCore({
 				</mesh>
 			</group>
 
-			{/* ── 3. REAL THREE.JS CYAN POINTLIGHT ── */}
-			<pointLight
-				ref={sparkLightRef}
-				color={techColor}
-				intensity={0.52}
-				distance={5.4}
-				position={[0, 0.85, 0]}
-				decay={2}
-			/>
+			{/* ── 3. REAL THREE.JS CYAN POINTLIGHT (Managed via ChapterLightRig) */}
 
 			{/* ── 4. ORBITING SHARDS & ENERGY MOTES ── */}
 			<SparkOrbitingShards proximityRef={proximityRef} />

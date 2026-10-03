@@ -104,9 +104,7 @@ export default function SolveRotunda({ onNavigate }) {
 			))}
 
 			{/* Consolidated Warm Rotunda Atmosphere Lights (replaces 7-8 individual column lights) */}
-			<pointLight position={[0, 3.6, 45.0]} color="#ffb45c" intensity={1.1} distance={15.0} decay={2} />
-			<pointLight position={[-7.5, 3.6, 35.0]} color="#ffb45c" intensity={1.0} distance={14.0} decay={2} />
-			<pointLight position={[7.5, 3.6, 35.0]} color="#ffb45c" intensity={1.0} distance={14.0} decay={2} />
+			{/* Rotunda Atmosphere Lights (Managed via ChapterLightRig) */}
 
 			{/* Upper Monumental Arch Entablature Ring */}
 			<mesh position={[0, 8.1, 38.0]}>

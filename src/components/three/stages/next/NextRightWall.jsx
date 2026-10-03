@@ -56,8 +56,7 @@ export default function NextRightWall({
 				</Text>
 			</group>
 
-			{/* Soft Warm Grazing Light */}
-			<pointLight position={[0, 4.2, 0.6]} color="#ffb45c" intensity={1.1} distance={4.0} decay={2} />
+			{/* Soft Warm Grazing Light (Managed via ChapterLightRig) */}
 		</group>
 	)
 }

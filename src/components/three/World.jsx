@@ -69,13 +69,13 @@ function World({ isMobile, enabled, isLocked, mobileInput, mobileLook, mobilePin
 			STAGE_ADJACENCY[navStage].forEach((s) => allowedStages.add(s))
 		}
 
-		// Keep current physical position stages visible during travel
-		if (navigationTarget && playerPositionRef?.current) {
+		// Keep nearby stages visible and prewarmed during both navigation and natural walking
+		if (playerPositionRef?.current) {
 			const px = playerPositionRef.current[0]
 			const pz = playerPositionRef.current[2]
 			for (const [sId, coords] of Object.entries(STAGE_COORDS)) {
 				const dist = Math.hypot(px - coords[0], pz - coords[2])
-				if (dist < 42.0) allowedStages.add(sId)
+				if (dist < 48.0) allowedStages.add(sId)
 			}
 		}
 

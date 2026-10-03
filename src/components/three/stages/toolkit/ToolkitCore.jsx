@@ -173,20 +173,7 @@ export default function ToolkitCore({ center = [21.8, 0, 33.1], isNearby = false
 					/>
 				</mesh>
 
-				{/* High-intensity Core Light Source */}
-				<pointLight
-					color="#00d2ff"
-					intensity={3.4}
-					distance={5.0}
-					decay={2}
-				/>
-				<pointLight
-					color="#ffb45c"
-					intensity={1.8}
-					distance={3.5}
-					decay={2}
-					position={[0, 0.25, 0]}
-				/>
+				{/* High-intensity Core Light Source (Managed via ChapterLightRig) */}
 
 				{/* Outer Translucent Faceted Core */}
 				<mesh ref={coreRef}>

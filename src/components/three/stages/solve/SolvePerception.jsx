@@ -397,15 +397,7 @@ export default function SolvePerception({ playerPositionRef, onSelect }) {
 				})}
 			</group>
 
-			{/* ── 6. REAL THREE.JS POINTLIGHT ── */}
-			<pointLight
-				ref={lightRef}
-				color={accentColor}
-				intensity={0.45}
-				distance={5.0}
-				position={[0, 2.0, 0.8]}
-				decay={2}
-			/>
+			{/* ── 6. REAL THREE.JS POINTLIGHT (Managed via ChapterLightRig) */}
 
 			{/* Interactive Click / E Cue */}
 			<group position={[0, 0.38, 2.2]}>

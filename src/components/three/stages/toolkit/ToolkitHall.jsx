@@ -40,6 +40,15 @@ export default function ToolkitHall({ onNavigate, center = [21.8, 0, 33.1] }) {
 		}))
 	}, [cx, cz])
 
+	const hallMaterials = useMemo(() => ({
+		pylonBase: new THREE.MeshStandardMaterial({ color: '#0e1724', roughness: 0.7, metalness: 0.3 }),
+		pylonStrut: new THREE.MeshStandardMaterial({ color: '#142032', roughness: 0.65, metalness: 0.4 }),
+		pylonNeon: new THREE.MeshBasicMaterial({ color: '#00d2ff', transparent: true, opacity: 0.7, toneMapped: false }),
+		pylonCross: new THREE.MeshStandardMaterial({ color: '#1a283c', roughness: 0.6, metalness: 0.4 }),
+		ribTruss: new THREE.MeshStandardMaterial({ color: '#121d2c', roughness: 0.7, metalness: 0.3 }),
+		ribNeon: new THREE.MeshBasicMaterial({ color: '#00d2ff', transparent: true, opacity: 0.6, toneMapped: false }),
+	}), [])
+
 	return (
 		<group position={[0, 0, 0]}>
 			{/* ── 1. MAIN OBSERVATORY FLOOR ── */}
@@ -83,33 +92,28 @@ export default function ToolkitHall({ onNavigate, center = [21.8, 0, 33.1] }) {
 			{pylons.map((p, idx) => (
 				<group key={idx} position={[p.x, 0, p.z]} rotation={[0, -p.angle, 0]}>
 					{/* Pylon Base */}
-					<mesh position={[0, 0.4, 0]}>
+					<mesh position={[0, 0.4, 0]} material={hallMaterials.pylonBase}>
 						<boxGeometry args={[0.45, 0.8, 0.55]} />
-						<meshStandardMaterial color="#0e1724" roughness={0.7} metalness={0.3} />
 					</mesh>
 
 					{/* Vertical Architectural Strut */}
-					<mesh position={[0, 4.2, 0]}>
+					<mesh position={[0, 4.2, 0]} material={hallMaterials.pylonStrut}>
 						<boxGeometry args={[0.24, 7.2, 0.35]} />
-						<meshStandardMaterial color="#142032" roughness={0.65} metalness={0.4} />
 					</mesh>
 
 					{/* Vertical Cyan Neon Strip on Pylon Face */}
-					<mesh position={[0, 4.2, 0.18]}>
+					<mesh position={[0, 4.2, 0.18]} material={hallMaterials.pylonNeon}>
 						<planeGeometry args={[0.04, 6.8]} />
-						<meshBasicMaterial color="#00d2ff" transparent opacity={0.7} toneMapped={false} />
 					</mesh>
 
 					{/* Horizontal Cross-Beam Connector at Height 3.5m */}
-					<mesh position={[0, 3.5, 0]}>
+					<mesh position={[0, 3.5, 0]} material={hallMaterials.pylonCross}>
 						<boxGeometry args={[0.8, 0.12, 0.4]} />
-						<meshStandardMaterial color="#1a283c" roughness={0.6} metalness={0.4} />
 					</mesh>
 
 					{/* Top Arch Capital */}
-					<mesh position={[0, 7.8, 0]}>
+					<mesh position={[0, 7.8, 0]} material={hallMaterials.pylonBase}>
 						<boxGeometry args={[0.48, 0.4, 0.6]} />
-						<meshStandardMaterial color="#0e1724" roughness={0.7} metalness={0.3} />
 					</mesh>
 				</group>
 			))}
@@ -118,14 +122,12 @@ export default function ToolkitHall({ onNavigate, center = [21.8, 0, 33.1] }) {
 			{archRibs.map((rib, i) => (
 				<group key={i} position={[rib.x, 7.8, rib.z]}>
 					{/* Curved Top Truss Beam */}
-					<mesh rotation={[0, 0, Math.PI / 2]}>
+					<mesh rotation={[0, 0, Math.PI / 2]} material={hallMaterials.ribTruss}>
 						<cylinderGeometry args={[0.08, 0.08, 14.5, 12]} />
-						<meshStandardMaterial color="#121d2c" roughness={0.7} metalness={0.3} />
 					</mesh>
 					{/* Cyan Neon Accent along Truss */}
-					<mesh position={[0, -0.09, 0]} rotation={[0, 0, Math.PI / 2]}>
+					<mesh position={[0, -0.09, 0]} rotation={[0, 0, Math.PI / 2]} material={hallMaterials.ribNeon}>
 						<cylinderGeometry args={[0.015, 0.015, 14.2, 8]} />
-						<meshBasicMaterial color="#00d2ff" transparent opacity={0.6} toneMapped={false} />
 					</mesh>
 				</group>
 			))}

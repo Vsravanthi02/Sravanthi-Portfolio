@@ -700,15 +700,7 @@ export default function BuildVision({ playerPositionRef, onSelect }) {
 				<VisionPipelinePackets speedMultiplier={1.0 + (proximityRef.current || 0) * 1.8} />
 			</group>
 
-			{/* ── 6. REAL THREE.JS POINTLIGHT ── */}
-			<pointLight
-				ref={lightRef}
-				color={accentColor}
-				intensity={0.45}
-				distance={4.8}
-				position={[0, 1.8, 0.8]}
-				decay={2}
-			/>
+			{/* ── 6. REAL THREE.JS POINTLIGHT (Managed via ChapterLightRig) */}
 
 			{/* Interactive Click / E Cue */}
 			<group position={[0, 0.38, 2.2]}>

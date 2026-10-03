@@ -456,35 +456,7 @@ export default function EngineerStation({
 					</group>
 				)}
 
-				{/* Exhibit Lighting: 01 has calm subtle light, 02-06 have balanced exhibition spotlighting */}
-				{isMethodology ? (
-					<pointLight
-						position={[0, 0.9, 0.1]}
-						color="#4eaed4"
-						intensity={active ? 0.48 : 0.24}
-						distance={2.0}
-						decay={2}
-					/>
-				) : (
-					<>
-						{/* Primary Vibrant Centerpiece & Monolith Spotlight */}
-						<pointLight
-							position={[0, 0.9, 0.15]}
-							color={accentColor}
-							intensity={active ? 1.35 : 0.92}
-							distance={2.6}
-							decay={2}
-						/>
-						{/* Exhibition Gallery Pedestal Uplight */}
-						<pointLight
-							position={[0, 0.35, 0.32]}
-							color="#ffd699"
-							intensity={active ? 0.45 : 0.28}
-							distance={1.8}
-							decay={2}
-						/>
-					</>
-				)}
+				{/* Exhibit Lighting: 01 has calm subtle light, 02-06 have balanced exhibition spotlighting (Managed via ChapterLightRig) */}
 			</group>
 
 			{/* ── 4. SUBTLE INTERACTIVE EXPLORE BADGE ── */}
