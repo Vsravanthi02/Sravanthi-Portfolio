@@ -162,9 +162,9 @@ h1 em { color: var(--cyan); font-style: normal; }
 	h1 { font-size: clamp(2.6rem, 12vw, 5rem); }
 	.hero-description { font-size: 0.9rem; line-height: 1.55; margin-left: auto; margin-right: auto; max-width: 340px; }
 	.hero-actions { flex-direction: column; gap: 0.55rem; }
-	.hero-actions-bar { bottom: 12.6rem; }
+	.hero-actions-bar { bottom: clamp(28vh, 29.5vh, 32vh); }
 	.hero-corner-note { display: none; }
-	.controls-guide { bottom: 1.25rem; left: 6vw; }.interaction-prompt { bottom: 9.6rem; }.touch-pad { bottom: 6.5rem; display: flex; flex-direction: column; gap: 0.25rem; left: 6vw; pointer-events: auto; position: absolute; text-align: center; z-index: 2; }.touch-pad div { display: flex; gap: 0.25rem; }.touch-pad button { background: rgba(10, 24, 43, 0.68); border: 1px solid rgba(107, 225, 255, 0.3); color: #a9dcec; font-family: 'DM Mono', monospace; font-size: 0.68rem; height: 28px; width: 28px; }.touch-look-zone { bottom: 0; display: block; left: 68%; pointer-events: auto; position: absolute; right: 0; top: 58%; z-index: 1; }.world-exit-card { left: 7vw; right: 7vw; }
+	.controls-guide { bottom: 2.7rem; left: 6vw; }.interaction-prompt { bottom: 9.6rem; }.touch-pad { bottom: 7.8rem; display: flex; flex-direction: column; gap: 0.25rem; left: 6vw; pointer-events: auto; position: absolute; text-align: center; z-index: 2; }.touch-pad div { display: flex; gap: 0.25rem; }.touch-pad button { background: rgba(10, 24, 43, 0.68); border: 1px solid rgba(107, 225, 255, 0.3); color: #a9dcec; font-family: 'DM Mono', monospace; font-size: 0.68rem; height: 28px; width: 28px; }.touch-look-zone { bottom: 0; display: block; left: 68%; pointer-events: auto; position: absolute; right: 0; top: 58%; z-index: 1; }.world-exit-card { left: 7vw; right: 7vw; }
 	.project-terminal-backdrop { align-items: flex-start; padding: 5.3rem 4vw 1.5rem; }.project-terminal { max-height: 88vh; }.terminal-body { padding: 1.3rem 1.1rem 1.1rem; }.terminal-grid { grid-template-columns: 1fr; }.capability-section > div { grid-template-columns: 1fr; }.architecture-flow { align-items: stretch; flex-direction: column; margin: 1.4rem 0 1.1rem; }.architecture-node { justify-content: flex-start; }.architecture-node b { height: 0.25rem; left: 50%; top: calc(100% + 0.25rem); width: 1px; }.architecture-node:last-child b { display: none; }.architecture-detail { align-items: flex-start; flex-direction: column; }.architecture-detail > span:last-child { max-width: none; text-align: left; }.terminal-footer { align-items: flex-start; flex-direction: column; gap: 0.45rem; padding: 0.75rem 1.1rem; }
 }
 
@@ -173,7 +173,7 @@ h1 em { color: var(--cyan); font-style: normal; }
 }
 
 @media (max-width: 520px) {
-	.hero-index { bottom: 1.5rem; left: 7vw; }
+	.hero-index { bottom: 1.1rem; left: 6vw; }
 	.hero-role { font-size: 0.82rem; }
 }
 

@@ -15,7 +15,8 @@ export default function SparkQuestionSpace({
 	playerPositionRef,
 	onSelectQuestion,
 	proximityRef,
-	onNavigate
+	onNavigate,
+	isMobile
 }) {
 	const stationProximities = useRef([0, 0, 0, 0])
 	const [activeStationIndex, setActiveStationIndex] = useState(-1)
@@ -68,46 +69,50 @@ export default function SparkQuestionSpace({
 		}
 	})
 
+	const isMobileView = isMobile || (typeof window !== 'undefined' && window.innerWidth <= 800)
+
 	return (
 		<group>
-			{/* ── 1. FOREGROUND WALKWAY INVITATION (From Reference Image) ── */}
-			<group position={[0, 0.06, -3.2]} rotation={[0, Math.PI, 0]}>
-				{/* Touch / Step Glyphic Icon */}
-				<mesh position={[0, 0.38, 0]}>
-					<ringGeometry args={[0.08, 0.095, 32]} />
-					<meshBasicMaterial color="#35d8ff" transparent opacity={0.65} toneMapped={false} />
-				</mesh>
+			{/* ── 1. FOREGROUND WALKWAY INVITATION (Desktop only — on mobile portrait it sits directly behind/overlaps the player character) ── */}
+			{!isMobileView && (
+				<group position={[0, 0.06, -3.2]} rotation={[0, Math.PI, 0]}>
+					{/* Touch / Step Glyphic Icon */}
+					<mesh position={[0, 0.38, 0]}>
+						<ringGeometry args={[0.08, 0.095, 32]} />
+						<meshBasicMaterial color="#35d8ff" transparent opacity={0.65} toneMapped={false} />
+					</mesh>
 
-				{/* Cursive Subtitle */}
-				<Text
-					position={[0, 0.16, 0]}
-					fontSize={0.16}
-					font="/fonts/MarckScript-Regular.ttf"
-					letterSpacing={0.03}
-					color="#FAF8F2"
-					anchorX="center"
-					anchorY="middle"
-					outlineWidth={0.005}
-					outlineColor="#050a14"
-					material-toneMapped={false}
-				>
-					Walk closer to explore
-				</Text>
-				<Text
-					position={[0, -0.02, 0]}
-					fontSize={0.14}
-					font="/fonts/SegoeUI.ttf"
-					letterSpacing={0.06}
-					color="#9eb6cc"
-					anchorX="center"
-					anchorY="middle"
-					outlineWidth={0.004}
-					outlineColor="#050a14"
-					material-toneMapped={false}
-				>
-					the questions that started my journey.
-				</Text>
-			</group>
+					{/* Cursive Subtitle */}
+					<Text
+						position={[0, 0.16, 0]}
+						fontSize={0.16}
+						font="/fonts/MarckScript-Regular.ttf"
+						letterSpacing={0.03}
+						color="#FAF8F2"
+						anchorX="center"
+						anchorY="middle"
+						outlineWidth={0.005}
+						outlineColor="#050a14"
+						material-toneMapped={false}
+					>
+						Walk closer to explore
+					</Text>
+					<Text
+						position={[0, -0.02, 0]}
+						fontSize={0.14}
+						font="/fonts/SegoeUI.ttf"
+						letterSpacing={0.06}
+						color="#9eb6cc"
+						anchorX="center"
+						anchorY="middle"
+						outlineWidth={0.004}
+						outlineColor="#050a14"
+						material-toneMapped={false}
+					>
+						the questions that started my journey.
+					</Text>
+				</group>
+			)}
 
 			{/* ── 2. THE 4 QUESTION STATIONS ── */}
 			{SPARK_QUESTIONS.map((station, index) => (

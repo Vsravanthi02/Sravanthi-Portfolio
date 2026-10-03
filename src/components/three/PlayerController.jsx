@@ -59,6 +59,7 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 	const previousTouchLook = useRef([0, 0])
 	const previousPinchDistance = useRef(0)
 	const navigationRef = useRef(null)
+	const lastHandledRequestId = useRef(null)
 	const lastZoomReport = useRef({ time: 0, value: CAMERA_DEFAULT_DISTANCE })
 	const { keys, lookDelta, mobileInput: input, mobileLook: touchLook } = usePlayerMovement({ enabled, isLocked, mobileInput, mobileLook })
 
@@ -104,6 +105,8 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 
 	useEffect(() => {
 		if (!navigationTarget || !enabled) return
+		if (navigationTarget.requestId && navigationTarget.requestId === lastHandledRequestId.current) return
+		lastHandledRequestId.current = navigationTarget.requestId || null
 		const start = [...playerPosition.current]
 		const distance = Math.hypot(navigationTarget.arrival[0] - start[0], navigationTarget.arrival[2] - start[2])
 		// Navigation has its own one-shot camera composition. Clear only the
@@ -164,6 +167,16 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 			const [x, , z] = navigation.target.arrival
 			playerPosition.current[0] = navigation.start[0] + (x - navigation.start[0]) * eased
 			playerPosition.current[2] = navigation.start[2] + (z - navigation.start[2]) * eased
+
+			// Smoothly align the character's heading to the destination's intended orientation (lookAt - arrival)
+			if (navigation.target.lookAt && navigation.target.arrival) {
+				const destPlayerYaw = Math.atan2(
+					navigation.target.lookAt[0] - navigation.target.arrival[0],
+					navigation.target.lookAt[2] - navigation.target.arrival[2]
+				)
+				playerRotation.current = dampAngle(playerRotation.current, destPlayerYaw, 1 - Math.exp(-PLAYER_TURN_SMOOTHNESS * step))
+			}
+
 			const targetYaw = Math.atan2(playerPosition.current[0] - navigation.target.lookAt[0], playerPosition.current[2] - navigation.target.lookAt[2])
 			cameraYawTarget.current = targetYaw
 			cameraPitchTarget.current = 0.2
@@ -180,6 +193,12 @@ function PlayerController({ enabled = true, isLocked, isMobile, mobileInput, mob
 			camera.lookAt(navigation.target.lookAt[0], navigation.target.lookAt[1], navigation.target.lookAt[2])
 			onPositionChange?.([...playerPosition.current])
 			if (progress >= 1) {
+				if (navigation.target.lookAt && navigation.target.arrival) {
+					playerRotation.current = Math.atan2(
+						navigation.target.lookAt[0] - navigation.target.arrival[0],
+						navigation.target.lookAt[2] - navigation.target.arrival[2]
+					)
+				}
 				cameraYaw.current = targetYaw
 				cameraYawTarget.current = targetYaw
 				stageLookTargetRef.current = navigation.target.lookAt ? { x: navigation.target.lookAt[0], y: navigation.target.lookAt[1], z: navigation.target.lookAt[2] } : null

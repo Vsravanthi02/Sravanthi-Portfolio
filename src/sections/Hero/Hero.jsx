@@ -84,6 +84,7 @@ function Hero() {
 		if (state.active) setNavigationStatus(state.label)
 		else {
 			setNavigationStatus(null)
+			setNavigationTarget(null)
 			if (state.cancelled) {
 				const previousId = previousDestinationRef.current || 'home'
 				activeDestinationRef.current = previousId

@@ -109,7 +109,7 @@ function World({ isMobile, enabled, isLocked, mobileInput, mobileLook, mobilePin
 
 		{/* Individual Chapter Stages with Distance & Visibility Culling */}
 		<group ref={sparkRef}>
-			<SparkInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} onNavigate={onNavigate} />
+			<SparkInstallation isMobile={isMobile} onSelect={onInteract} playerPositionRef={playerPositionRef} onNavigate={onNavigate} />
 		</group>
 		<group ref={buildRef}>
 			<BuildInstallation onSelect={onInteract} playerPositionRef={playerPositionRef} onNavigate={onNavigate} />

@@ -77,7 +77,7 @@ const METAL_COLOR = '#0d121a'       // Deep structural obsidian/charcoal
 const EDGE_COLOR = '#ffb45c'        // Warm amber architectural LED
 const TECH_COLOR = '#35d8ff'        // Controlled cyan technological accent
 
-function SparkInstallation({ onSelect, playerPositionRef, onNavigate }) {
+function SparkInstallation({ onSelect, playerPositionRef, onNavigate, isMobile }) {
 	const rootRef = useRef()
 	const proximityRef = useRef(0)
 
@@ -274,6 +274,7 @@ function SparkInstallation({ onSelect, playerPositionRef, onNavigate }) {
 				playerPositionRef={playerPositionRef}
 				proximityRef={proximityRef}
 				onNavigate={onNavigate}
+				isMobile={isMobile}
 				onSelectQuestion={(question) => {
 					onSelect?.({ type: 'spark-question', ...question })
 				}}
